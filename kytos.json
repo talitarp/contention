@@ -1,0 +1,11 @@
+{
+  "author": "italovalcy",
+  "username": "italovalcy",
+  "name": "testnapp",
+  "description": "Kytos Napp to test kytos",
+  "version": "1.0",
+  "napp_dependencies": ["of_core", "topology"],
+  "license": "",
+  "tags": [],
+  "url": ""
+}

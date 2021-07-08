@@ -1,0 +1,7 @@
+.swp
+.pyc
+.napp
+.eggs
+
+__pycache__
+.tox
