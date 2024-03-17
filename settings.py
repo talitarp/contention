@@ -1,1 +1,1 @@
-"""Module with the Constants used in the talitarp/kytosContainment."""
+"""Module for lock containment used in talitarp/kytosContainment."""
