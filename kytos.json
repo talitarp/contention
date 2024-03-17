@@ -2,7 +2,7 @@
   "author": "Talita Rocha Pinheiro",
   "username": "talitarp",
   "name": "KytosContention",
-  "description": "Kytos Napp to contention type block",
+  "description": "Napp kytos for lock-type containment",
   "version": "1.0",
   "napp_dependencies": ["of_core", "topology"],
   "license": "",
