@@ -1,8 +1,8 @@
 {
-  "author": "italovalcy",
-  "username": "italovalcy",
-  "name": "testnapp",
-  "description": "Kytos Napp to test kytos",
+  "author": "Talita Rocha Pinheiro",
+  "username": "talitarp",
+  "name": "KytosContention",
+  "description": "Kytos Napp to contention type block",
   "version": "1.0",
   "napp_dependencies": ["of_core", "topology"],
   "license": "",
