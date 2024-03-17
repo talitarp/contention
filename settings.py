@@ -1,1 +1,1 @@
-"""Module with the Constants used in the italovalcy/testnapp."""
+"""Module with the Constants used in the talitarp/kytosContainment."""
