@@ -1,6 +1,6 @@
 Overview
 ========
-Kytos Napp to test basic kytos
+Napp kytos for lock-type containment
 
 
 Requirements
