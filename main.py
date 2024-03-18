@@ -1,4 +1,4 @@
-"""Main module of italovalcy/testnapp Kytos Network Application.
+"""Main module of talitarp/kytosContainment Kytos Network Application.
 """
 
 from flask import jsonify, request
@@ -7,30 +7,30 @@ from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
 
 class Main(KytosNApp):
-    """Main class of italovalcy/testnapp NApp.
+    """Main class of talitarp/kytosContainment NApp.
 
     This class is the entry point for this napp.
     """
 
     def setup(self):
-        log.info('SETUP testnapp')
+        log.info('SETUP kytosContainment')
 
     def execute(self):
         """Execute once when the napp is running."""
-        log.info('EXECUTE testnapp')
+        log.info('EXECUTE kytosContainment')
 
     def shutdown(self):
         """Execute when your napp is unloaded.
 
         If you have some cleanup procedure, insert it here.
         """
-        log.info('SHUTDOWN testnapp')
+        log.info('SHUTDOWN kytosContainment')
 
     @rest('/v1/', methods=['GET'])
     def handle_get(self):
         """Endpoint to return nothing.
         """
-        log.info('GET /v1/testnapp')
+        log.info('GET /v1/kytosContainment')
         return jsonify({}), 200
 
     @listen_to('.*.switch.(new|reconnected)')
