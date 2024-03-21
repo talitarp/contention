@@ -39,9 +39,11 @@ class Main(KytosNApp):
     def handle_interface_created(self, event):
         """ Handle the event of a interface created"""
         log.info(f'handle_interface_created event={event} content={event.content}')
-
- """ Handle the LOCK contention event"""
-     def contention_block(self, ipaddr):
+        
+     """ Handle the LOCK contention event"""
+     @rest('/v1/contention_block/', methods=['POST'])
+     def contention_block(self, request):
+         data=get_json_or_400(request,self.controller.loop)
             print "==> contention_block ipaddr=%s in all switches" % (ipaddr)
             actions = []
             for sw in self.net.nodes():
