@@ -7,7 +7,9 @@ from kytos.core.helpers import listen_to
 
 class Main(KytosNApp):
     """Main class of talitarp/kytosContainment NApp.This class is the entry point for this napp."""  
+    
      """ Handle the LOCK contention event"""
+
      @rest('/v1/contention_block/', methods=['POST'])
      def contention_block(self, request):
          data=get_json_or_400(request,self.controller.loop)
