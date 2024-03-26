@@ -1,7 +1,7 @@
 {
   "author": "Talita Rocha Pinheiro",
   "username": "talitarp",
-  "name": "KytosContainment",
+  "name": "contention_block",
   "description": "Napp kytos for lock-type containment",
   "version": "1.0",
   "napp_dependencies": ["of_core", "topology"],
