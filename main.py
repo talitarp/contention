@@ -16,9 +16,11 @@ class Main(KytosNApp):
 
         The setup method is automatically called by the controller when your
         application is loaded.
+        
+        log.info("Starting Kytos contention_block NApp!")
 
+        It is not necessary in this NApp. 
         """
-        log.info("Starting Kytos SDNTrace CP App!")
 
     def execute(self):
         """This method is executed right after the setup method execution.
@@ -27,12 +29,16 @@ class Main(KytosNApp):
         method a line like the following example:
 
             self.execute_as_loop(30)  # 30-second interval.
+        
+        It is not necessary in this NApp. 
         """
 
     def shutdown(self):
         """This method is executed when your napp is unloaded.
 
         If you have some cleanup procedure, insert it here.
+
+        It is not necessary in this NApp. 
         """
         
      @rest('/v1/contention_block/', methods=['POST'])
