@@ -6,7 +6,7 @@ from kytos.core.helpers import listen_to
 from kytos.core.rest_api import (HTTPException, JSONResponse, Request, get_json_or_400)  
 
 class Main(KytosNApp):
-    """Main class of talitarp/kytosContainment NApp.This class is the entry point for this napp."""  
+    """Main class of talitarp/contention_block NApp.This class is the entry point for this napp."""  
     
      """ Handle the LOCK contention event"""
 
