@@ -1,1 +1,1 @@
-"""Module for the NApp talitarp/kytosContainment."""
+"""Module for the NApp talitarp/contention_block."""
