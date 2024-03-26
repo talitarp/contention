@@ -37,8 +37,8 @@ class Main(KytosNApp):
         
      @rest('/v1/contention_block/', methods=['POST'])
      def contention_block(self, request: Request) -> JSONResponse:
-         data=get_json_or_400(request,self.controller.loop)
-         print "==> contention_block ipaddr=%s in all switches" % (ipaddr)
+         data=get_json_or_400(request, self.controller.loop)
+         % print "==> contention_block ipaddr=%s in all switches" % (ipaddr)
          actions = []
          for sw in self.net.nodes():
              dp = self.net.node[sw]['conn']
