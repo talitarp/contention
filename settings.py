@@ -1,1 +1,1 @@
-"""Module for lock containment used in talitarp/kytosContainment."""
+"""Module for lock containment used in talitarp/contention_block."""
