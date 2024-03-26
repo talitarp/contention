@@ -1,9 +1,9 @@
-"""Main module of talitarp/kytosContainment Kytos Network Application."""
+"""Main module of talitarp/contention_block Kytos Network Application."""
 
-from flask import jsonify, request
 from kytos.core import KytosNApp, log, rest
 from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
+from kytos.core.rest_api import (HTTPException, JSONResponse, Request, get_json_or_400)  
 
 class Main(KytosNApp):
     """Main class of talitarp/kytosContainment NApp.This class is the entry point for this napp."""  
