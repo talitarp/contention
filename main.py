@@ -53,16 +53,17 @@ class Main(KytosNApp):
          entries = convert_entries(data)
          if not entries:
              raise HTTPException(400, "Empty entries")
-         
-       
+                
      """A PARTIR DAQUI:
      Nesse momento passei a ter acesso aos parametros da requisição do usuario.
      Missão: processar a requisição do user para entender que solicitação de bloqueio ele quer fazer.
-     Recebo do user alguns argumentos.O user me diz qual: 1- o switch , 2- a porta e 3 - quais sao os criterios de match do pacote que quer usar para bloquear o trafego.
+     Recebo do user alguns argumentos. O user me diz qual: 1- o switch , 2- a porta e 3 - quais sao os criterios de match do pacote que quer usar para bloquear o trafego.
      match: ip origem, porta tcp, porta udp...
 
-
-      Ao criar regra de bloqueio, vou ter que fazer uma requisção HTTP
+      Regra de bloqueio:
+      Não vou fazer mais o self.add_flow(dp, 65534, match, actions)
+      Vou ter que fazer uma requisção "api HTTP rest" para a NApp da Flow Manager informando os matches,
+      informando o fluxo que quero criar, os matches, a action é vazia, qual o switch que quero bloquear...
      """
        actions = [] #significa que tem o block pois action esta vazia.
 
