@@ -63,19 +63,9 @@ class Main(KytosNApp):
       Regra de bloqueio:
       Não vou fazer mais o self.add_flow(dp, 65534, match, actions)
       Vou ter que fazer uma requisção "api HTTP rest" para a NApp da Flow Manager informando os matches,
-      informando o fluxo que quero criar, os matches, a action é vazia, qual o switch que quero bloquear...
+      informando o fluxo que quero criar, os matches, a action é vazia (esta abaixo), qual o switch que quero bloquear...
      """
-       actions = [] #significa que tem o block pois action esta vazia.
-
-         for sw in self.net.nodes():
-             dp = self.net.node[sw]['conn']
-             for port in self.get_access_ports(sw):
-                 for vlan in self.eline_map:
-                     # the dl_vlan match is a workaround because flowvisor seems to bug when using
-                     # dl_type=0x0800
-                     match = {'in_port': port, 'dl_type': 0x0800, 'dl_vlan': vlan, 'nw_src': request}
-                     self.add_flow(dp, 65534, match, actions)
-         return (True, 'Success')
+       actions = [] 
 
     """MENSAGENS DE SUCESSO OU ERRO:
         return JSONResponse ("block ok")
