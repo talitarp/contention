@@ -111,21 +111,3 @@ class Main(KytosNApp):
 
         # 3. Criar a regra
         # --> chamar a flow_manager
-
-    """A PARTIR DAQUI:
-    Nesse momento passei a ter acesso aos parametros da requisição do usuario.
-    Missão: processar a requisição do user para entender que solicitação de bloqueio ele quer fazer.
-    Recebo do user alguns argumentos. O user me diz qual: 1- o switch , 2- a porta e 3 - quais sao os criterios de match do pacote que quer usar para bloquear o trafego.
-    match: ip origem, porta tcp, porta udp...
-
-     Regra de bloqueio:
-     Não vou fazer mais o self.add_flow(dp, 65534, match, actions)
-     Vou ter que fazer uma requisção "api HTTP rest" para a NApp da Flow Manager informando os matches,
-     informando o fluxo que quero criar, os matches, a action é vazia (esta abaixo), qual o switch que quero bloquear...
-      actions = []
-    """
-
-    """MENSAGENS DE SUCESSO OU ERRO:
-        return JSONResponse ("block ok")
-        raise HTTPException (400, "Invalid request")
-    """
