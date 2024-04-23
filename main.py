@@ -1,5 +1,6 @@
 """Main module of talitarp/contention_block Kytos Network Application."""
 
+import requests
 from kytos.core import KytosNApp, log, rest
 from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
