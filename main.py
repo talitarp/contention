@@ -6,6 +6,7 @@ from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
 from kytos.core.rest_api import (HTTPException, JSONResponse, Request,
                                  get_json_or_400)
+from napps.amlight.sdntrace.tracing.trace_manager import TraceManager
 
 class Main(KytosNApp):
     """Main class of talitarp/contention_block NApp.This class is the entry point for this napp."""
