@@ -134,7 +134,30 @@ class Main(KytosNApp):
     def list_contention_block(self, _request: Request) -> JSONResponse:
         """List all blocks performed so far."""
         """REST module inserts blocking request in a queue provided by the TraceManager"""
-        return JSONResponse(self.tracing.rest_list_results())
+      
+        data = get_json_or_400(request, self.controller.loop) #access user request
+        result, msg = self.validate_input(data)
+        if not result:
+            raise HTTPException(400, f"Invalid request data: {msg}")
+        log.info(f"list_contention_block called with data={data}")
+
+        # Call flow_manager's REST API to create the flow
+        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
+        payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+        dpid = data["switch"]
+
+        if "ipv4_src" in data["match"]:
+            payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
+        if "ipv4_dst" in data["match"]:
+            payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
+        if "ip_proto" in data["match"]:
+            payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
+
+        #response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        if response.status_code != 202:
+            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+
+        #return JSONResponse(self.tracing.rest_list_results())
       
         # 1. descrever a API REST
         # quais argumentos vamos aceitar?
