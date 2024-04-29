@@ -100,8 +100,6 @@ class Main(KytosNApp):
         response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-          
-        JSONResponse(self.tracing.rest_new_trace(payload))
         return JSONResponse({"result": "contentation created successfully"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
@@ -133,7 +131,6 @@ class Main(KytosNApp):
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, _request: Request) -> JSONResponse:
         """List all blocks performed so far."""
-        """REST module inserts blocking request in a queue provided by the TraceManager"""
       
         data = get_json_or_400(request, self.controller.loop) #access user request
         result, msg = self.validate_input(data)
@@ -153,11 +150,11 @@ class Main(KytosNApp):
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
 
-        #response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-        if response.status_code != 202:
+        response = requests.list(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        #return JSONResponse(self.tracing.rest_list_results())
+       return JSONResponse({"result": "Listed successfully"})
       
         # 1. descrever a API REST
         # quais argumentos vamos aceitar?
