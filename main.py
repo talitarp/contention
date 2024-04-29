@@ -130,7 +130,7 @@ class Main(KytosNApp):
 
         return JSONResponse({"result": "contention deleted successfully"})
 
-    @rest("/v1/contention_block", methods=["GET"])
+    @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, _request: Request) -> JSONResponse:
         """List all blocks performed so far."""
         """REST module inserts blocking request in a queue provided by the TraceManager"""
