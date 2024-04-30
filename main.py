@@ -6,7 +6,6 @@ from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
 from kytos.core.rest_api import (HTTPException, JSONResponse, Request,
                                  get_json_or_400)
-from napps.amlight.sdntrace.tracing.trace_manager import TraceManager
 
 class Main(KytosNApp):
     """Main class of talitarp/contention_block NApp.This class is the entry point for this napp."""
@@ -130,7 +129,7 @@ class Main(KytosNApp):
 
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, _request: Request) -> JSONResponse:
-        """List all blocks performed so far."""
+        """List blocks performed so far."""
       
         data = get_json_or_400(request, self.controller.loop) #access user request
         result, msg = self.validate_input(data)
@@ -150,11 +149,17 @@ class Main(KytosNApp):
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
 
-        response = requests.list(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        #response = requests.list(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+          
+        flows = []
+        for flow in self.myapp.flows.get(dpid, []):
+            flows.append({'match': flow['match'], 'priority': flow['priority']})
 
-       return JSONResponse({"result": "Listed successfully"})
+        body = json.dumps(flows)
+        return Response(content_type='application/json', body=body)
+       #return JSONResponse({"result": "Listed successfully"})
       
         # 1. descrever a API REST
         # quais argumentos vamos aceitar?
