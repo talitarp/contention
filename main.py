@@ -74,7 +74,7 @@ class Main(KytosNApp):
 
         return True, "success"
 
-   def flow_stats_by_dpid_flow_id(self, dpid):
+   def flow_stats_by_dpid_flow_id(self, dpids):
         """ Auxiliar funcion """
         flow_stats_by_id = {}
         flows_stats_dict_copy = self.flows_stats_dict.copy()
@@ -165,14 +165,17 @@ class Main(KytosNApp):
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
 
-        #response = requests.list(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+
+        dpids = request.query_params.getlist("dpid")
+        if len(dpids) == 0:
+            dpids = [sw.dpid for sw in self.controller.switches.values()]
           
-        response = self.flow_stats_by_dpid_flow_id(dpid)
+        response = self.flow_stats_by_dpid_flow_id(dpids)
         return JSONResponse(response)
           
-        #return JSONResponse({"result": "Listed successfully"})
+      
       
         # 1. descrever a API REST
         # quais argumentos vamos aceitar?
