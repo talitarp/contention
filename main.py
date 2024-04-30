@@ -74,22 +74,6 @@ class Main(KytosNApp):
 
         return True, "success"
 
-   def flow_stats_by_dpid_flow_id(self, dpids):
-        """ Auxiliar funcion """
-        flow_stats_by_id = {}
-        flows_stats_dict_copy = self.flows_stats_dict.copy()
-        for flow_id, flow in flows_stats_dict_copy.items():
-            dpid = flow.switch.dpid
-            if dpid in dpids:
-                if dpid not in flow_stats_by_id:
-                    flow_stats_by_id[dpid] = {}
-                info_flow_as_dict = flow.stats.as_dict()
-                info_flow_as_dict.update({"cookie": flow.cookie})
-                info_flow_as_dict.update({"priority": flow.priority})
-                info_flow_as_dict.update({"match": flow.match.as_dict()})
-                flow_stats_by_id[dpid].update({flow_id: info_flow_as_dict})
-        return flow_stats_by_id
-
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
         data = get_json_or_400(request, self.controller.loop) #access user request
@@ -168,11 +152,7 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        dpids = request.query_params.getlist("dpid")
-        if len(dpids) == 0:
-            dpids = [sw.dpid for sw in self.controller.switches.values()]
-          
-        response = self.flow_stats_by_dpid_flow_id(dpids)
+        response = self.list_blocks(dpid)
         return JSONResponse(response)
           
       
