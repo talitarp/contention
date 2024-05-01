@@ -153,7 +153,7 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        blocks = request.flow_stats(f"http://127.0.0.1:8181/api/kytos/core/v1/flow/stats", json=dpid)
+        blocks = requests.flow_stats(f"http://127.0.0.1:8181/api/kytos/core/v1/flow/stats", json=dpid)
         return JSONResponse(blocks)
           
       
