@@ -40,9 +40,9 @@ class Main(KytosNApp):
 
             It is not necessary in this NApp.
         """
-    def list_blocks(self, payload):
-        #blocks=[]
-        #blocks.append(payload)
+    def insert_list_blocks(self, dpid):
+        blocks=[]
+        blocks.append(dpid)
         return True, "List Update"
       
     def validate_input(self, data):
@@ -104,8 +104,8 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
         
-        if (list_blocks(payload)):
-            return JSONResponse({"result": "contentation created successfully OK"})
+        insert_list_blocks(dpid)
+        return JSONResponse({"result": "contentation created successfully OK"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
