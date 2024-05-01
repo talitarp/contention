@@ -80,7 +80,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"contention_block called with data={data}")
+        log.info(f"ADD contention_block called with data={data}")
 
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
@@ -108,7 +108,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"remove_contention_block called with data={data}")
+        log.info(f"REMOVE contention_block called with data={data}")
 
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
@@ -136,7 +136,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"list_contention_block called with data={data}")
+        log.info(f"LIST contention_block called with data={data}")
 
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
