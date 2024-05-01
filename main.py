@@ -105,7 +105,7 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
         
         if (list_blocks(payload)):
-            return JSONResponse({"result": "contentation created successfully"})
+            return JSONResponse({"result": "contentation created successfully OKKKK"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
