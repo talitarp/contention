@@ -104,7 +104,7 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
         
-        if (list_blocks(payload))
+        if (list_blocks(payload)):
             return JSONResponse({"result": "contentation created successfully"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
