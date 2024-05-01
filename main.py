@@ -40,10 +40,6 @@ class Main(KytosNApp):
 
             It is not necessary in this NApp.
         """
-    def insert_list_blocks(self, dpid):
-        blocks=[]
-        blocks.append(dpid)
-        return True, "List Update"
       
     def validate_input(self, data):
         # TODO: validate all user inputs
@@ -104,8 +100,7 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
         
-        self.insert_list_blocks(dpid)
-        return JSONResponse({"result": "contentation created successfully OK"})
+        return JSONResponse({"result": "contentation created successfully"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
@@ -131,7 +126,7 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        return JSONResponse({"result": "contention deleted successfully OK"})
+        return JSONResponse({"result": "contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, _request: Request) -> JSONResponse:
@@ -158,8 +153,8 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        response = self.list_blocks(dpid)
-        return JSONResponse(response)
+        blocks = request.flow_stats(f"http://127.0.0.1:8181/api/kytos/core/v1/flow/stats", json=dpid)
+        return JSONResponse(blocks)
           
       
       
