@@ -129,7 +129,7 @@ class Main(KytosNApp):
         return JSONResponse({"result": "contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
-    def list_contention_block(self, _request: Request) -> JSONResponse:
+    def list_contention_block(self, request: Request) -> JSONResponse:
         """List blocks performed so far."""
       
         data = get_json_or_400(request, self.controller.loop) #access user request
