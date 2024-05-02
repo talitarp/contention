@@ -150,7 +150,7 @@ class Main(KytosNApp):
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
           
-        response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=dpid)
+        response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
