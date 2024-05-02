@@ -80,7 +80,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"ADD contention_block called with data={data}")
+        log.info(f"ADD BLOCK contention_block called with data={data}")
 
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
@@ -108,7 +108,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"REMOVE contention_block called with data={data}")
+        log.info(f"DELETE BLOCK contention_block called with data={data}")
 
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
@@ -136,7 +136,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"LIST contention_block called with data={data}")
+        log.info(f"LIST BLOCKS contention_block called with data={data}")
 
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
@@ -151,10 +151,13 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
           
         response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        list_block=list(response)
+        
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        return JSONResponse({"result": "contention listed successfully"})
+        #return JSONResponse({"result": "contention listed successfully"})
+        return JsonResponse(list_block, safe = False)
           
       
       
