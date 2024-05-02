@@ -151,13 +151,12 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
           
         response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-        list_block=list(response)
         
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        #return JSONResponse({"result": "contention listed successfully"})
-        return JSONResponse(f"LIST BLOCKS {response}")
+        return response(body=json.dumps(payload))
+        #return JSONResponse(f"LIST BLOCKS {response}")
           
       
       
