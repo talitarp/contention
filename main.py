@@ -157,7 +157,7 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
         #return JSONResponse({"result": "contention listed successfully"})
-        return JSONResponse(list_block)
+        return JSONResponse(f"Blocks:",{response})
           
       
       
