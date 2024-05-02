@@ -156,7 +156,8 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        return JSONResponse(f"LIST BLOCKS {response.text}")
+        #return JSONResponse(f"LIST BLOCKS {response.text}")
+        return jsonify(f"LIST BLOCKS {response}")
           
       
       
