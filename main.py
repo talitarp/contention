@@ -99,7 +99,7 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"ADD BLOCK contention_block called with data={data}")
       
-        payload=self.get_payload(data)
+        payload = self.get_payload(data)
         dpid = data["switch"]
 
         response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
@@ -116,7 +116,7 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
 
-        payload=self.get_payload(data)
+        payload = self.get_payload(data)
         dpid = data["switch"]
 
         response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
