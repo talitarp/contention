@@ -150,22 +150,10 @@ class Main(KytosNApp):
     def list_contention_block(self, request: Request) -> JSONResponse:
         """List blocks performed so far."""
       
-        data = get_json_or_400(request, self.controller.loop) #access user request
-        result, msg = self.validate_input(data)
-        if not result:
-            raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"LIST BLOCKS contention_block called with data={data}")
-
-        action = 'GET'
-        payload = self.get_payload(data, action)
-        dpid = data["switch"]
+        self.print_block_list(self)
           
-        response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-        
-        if response.status_code != 200:
-            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+        #response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
 
-        return self.print_block_list(self,data)
           
             
         # 1. descrever a API REST
