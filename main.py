@@ -79,7 +79,7 @@ class Main(KytosNApp):
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
 
-        if action == 'POST':
+        if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         if action == 'DELETE': 
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
@@ -141,7 +141,8 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"LIST BLOCKS contention_block called with data={data}")
 
-        payload=self.get_payload(data)
+        action = 'GET'
+        teste = self.get_payload(data, action)
         dpid = data["switch"]
           
         response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
