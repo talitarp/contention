@@ -115,25 +115,23 @@ class Main(KytosNApp):
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
-
+      
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
-        payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
-
+        payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+        dpid = data["switch"]
+      
         if "ipv4_src" in data["match"]:
-            payload["flows"][0]["match"]["dl_type"] = 0x800
             payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
         if "ipv4_dst" in data["match"]:
-            payload["flows"][0]["match"]["dl_type"] = 0x800
             payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
-        dpid = data["switch"]
-
+          
         response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-
+          
         return JSONResponse({"result": "contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
