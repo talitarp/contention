@@ -164,7 +164,7 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        self.print_block_list(self)
+        print (self.stored_blocks)
           
         #self.print_block_list(self)
         #return JSONResponse({"result": "Contentation created successfully"})
