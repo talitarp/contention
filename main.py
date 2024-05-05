@@ -24,7 +24,7 @@ class Main(KytosNApp):
         #                                     {'command': '<add|delete>',
         #                                      'block': {block_dict}}]}}}
         log.info("Starting Kytos contention_block NApp!")
-        self.stored_blocks = {}
+        self.stored_blocks = []
 
     def execute(self):
         """This method is executed right after the setup method execution.
