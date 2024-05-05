@@ -101,7 +101,7 @@ class Main(KytosNApp):
 
     def print_block_list(self, data):
         # List needs to be updated whenever rule is inserted or removed
-        for block in stored_blocks: 
+        for block in self.stored_blocks: 
             print (block)
           
         #return True, "Print block list"
@@ -150,9 +150,23 @@ class Main(KytosNApp):
     def list_contention_block(self, request: Request) -> JSONResponse:
         """List blocks performed so far."""
       
-        self.print_block_list(self)
-          
+        data = get_json_or_400(request, self.controller.loop) #access user request
+        result, msg = self.validate_input(data)
+        if not result:
+            raise HTTPException(400, f"Invalid request data: {msg}")
+        log.info(f"LIST BLOCK contention_block called with data={data}")
+      
+        action = 'GET'
+        payload = self.get_payload(data, action)
+        dpid = data["switch"]
+
         #response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        if response.status_code != 200:
+            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+          
+        self.print_block_list(self)
+        #return JSONResponse({"result": "Contentation created successfully"})
+
 
           
             
