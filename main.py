@@ -24,7 +24,7 @@ class Main(KytosNApp):
         #                                     {'command': '<add|delete>',
         #                                      'block': {block_dict}}]}}}
         log.info("Starting Kytos contention_block NApp!")
-        self.stored_blocks = {}
+        self.stored_blocks = []
 
     def execute(self):
         """This method is executed right after the setup method execution.
@@ -122,8 +122,8 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
           
-        self.stored_blocks.append(dpid, payload) # List needs to be updated whenever rule is inserted
-        log.info(f"Update block list ADD={payload}")
+        self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
+        log.info(f"Update block list ADD={data}")
         return JSONResponse({"result": "Contentation created successfully"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
@@ -142,8 +142,8 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        self.stored_blocks.remove(dpid, payload) # List needs to be updated whenever rule is removed
-        log.info(f"Update block list DELETE={payload}")
+        self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
+        log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
