@@ -99,10 +99,12 @@ class Main(KytosNApp):
           
         return payload
 
-    def print_block_list(self):
+    def print_block_list(self, data):
         # List needs to be updated whenever rule is inserted or removed
+        for block in stored_blocks: 
+            log.info(f"Block={block}") #imprimir
           
-        return True, "Print block list"
+        #return True, "Print block list"
         
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
@@ -155,7 +157,7 @@ class Main(KytosNApp):
         log.info(f"LIST BLOCKS contention_block called with data={data}")
 
         action = 'GET'
-        teste = self.get_payload(data, action)
+        payload = self.get_payload(data, action)
         dpid = data["switch"]
           
         response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
@@ -163,10 +165,9 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        return JSONResponse(f"LIST BLOCKS {response.text}")
+        return self.print_block_list(self,data)
           
-      
-      
+            
         # 1. descrever a API REST
         # quais argumentos vamos aceitar?
         # - em qual switch vamos bloquear (mandatory)
