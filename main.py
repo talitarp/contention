@@ -163,11 +163,13 @@ class Main(KytosNApp):
         #response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+
+        for block in self.stored_blocks:
+            #IMPRIMIR
+            console.log(f"Block: {block}")
           
-        self.print_block_list(self)
+        #self.print_block_list(self)
         #return JSONResponse({"result": "Contentation created successfully"})
-
-
           
             
         # 1. descrever a API REST
