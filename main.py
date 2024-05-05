@@ -120,7 +120,7 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
           
-        stored_blocks.append(data) # List needs to be updated whenever rule is inserted
+        self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
         log.info(f"Update block list ADD={data}")
         return JSONResponse({"result": "Contentation created successfully"})
 
@@ -133,14 +133,14 @@ class Main(KytosNApp):
         log.info(f"DELETE BLOCK contention_block called with data={data}")
 
         action = 'DELETE'
-        teste = self.get_payload(data, action)
+        payload = self.get_payload(data, action)
         dpid = data["switch"]
       
-        response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=teste)
+        response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        stored_blocks.remove(data) # List needs to be updated whenever rule is removed
+        self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
         log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
 
