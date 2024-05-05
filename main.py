@@ -18,9 +18,13 @@ class Main(KytosNApp):
             application is loaded.
 
             log.info("Starting Kytos contention_block NApp!")
-
-            It is not necessary in this NApp.
         """
+        # Format of stored block data:
+        # {'Blocks': {'dpid_str': {'block_list': [
+        #                                     {'command': '<add|delete>',
+        #                                      'block': {block_dict}}]}}}
+        log.info("Starting Kytos contention_block NApp!")
+        self.stored_blocks = {}
 
     def execute(self):
         """This method is executed right after the setup method execution.
@@ -94,7 +98,12 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
           
         return payload
-      
+
+    def print_block_list(self):
+        # List needs to be updated whenever rule is inserted or removed
+          
+        return True, "Print block list"
+        
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
         data = get_json_or_400(request, self.controller.loop) #access user request
@@ -110,8 +119,10 @@ class Main(KytosNApp):
         response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-        
-        return JSONResponse({"result": "contentation created successfully"})
+          
+        stored_blocks.append(data) # List needs to be updated whenever rule is inserted
+        log.info(f"Update block list ADD={data}")
+        return JSONResponse({"result": "Contentation created successfully"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
@@ -128,8 +139,10 @@ class Main(KytosNApp):
         response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=teste)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-          
-        return JSONResponse({"result": "contention deleted successfully"})
+
+        stored_blocks.remove(data) # List needs to be updated whenever rule is removed
+        log.info(f"Update block list DELETE={data}")
+        return JSONResponse({"result": "Contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
