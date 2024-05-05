@@ -122,8 +122,8 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
           
-        self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
-        log.info(f"Update block list ADD={data}")
+        self.stored_blocks.append(payload) # List needs to be updated whenever rule is inserted
+        log.info(f"Update block list ADD={payload}")
         return JSONResponse({"result": "Contentation created successfully"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
@@ -142,8 +142,8 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
-        log.info(f"Update block list DELETE={data}")
+        self.stored_blocks.remove(payload) # List needs to be updated whenever rule is removed
+        log.info(f"Update block list DELETE={payload}")
         return JSONResponse({"result": "Contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
