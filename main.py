@@ -99,7 +99,7 @@ class Main(KytosNApp):
           
         return payload
 
-    def print_block_list(self, data):
+    def print_block_list(self):
         # List needs to be updated whenever rule is inserted or removed
         for block in self.stored_blocks: 
             JSONResponse(f"Block: {block}")
@@ -164,7 +164,7 @@ class Main(KytosNApp):
         if response.status_code != 200:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        print (self.stored_blocks)
+        self.print_block_list(self)
           
         #self.print_block_list(self)
         #return JSONResponse({"result": "Contentation created successfully"})
