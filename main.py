@@ -102,7 +102,7 @@ class Main(KytosNApp):
     def print_block_list(self, data):
         # List needs to be updated whenever rule is inserted or removed
         for block in stored_blocks: 
-            log.info(f"Block={block}") #imprimir
+            print (block)
           
         #return True, "Print block list"
         
