@@ -98,13 +98,6 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
           
         return payload
-
-    def print_block_list(self):
-        # List needs to be updated whenever rule is inserted or removed
-        for block in self.stored_blocks: 
-            JSONResponse(f"Block: {block}")
-          
-        #return True, "Print block list"
         
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
@@ -149,25 +142,15 @@ class Main(KytosNApp):
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
         """List blocks performed so far."""
-      
-        data = get_json_or_400(request, self.controller.loop) #access user request
-        result, msg = self.validate_input(data)
-        if not result:
-            raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"LIST BLOCK contention_block called with data={data}")
-      
-        action = 'GET'
-        payload = self.get_payload(data, action)
-        dpid = data["switch"]
 
         #response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-        if response.status_code != 200:
-            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+        #if response.status_code != 200:
+         #   raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        print (self.stored_blocks)
+        #print (self.stored_blocks)
           
         #self.print_block_list(self)
-        #return JSONResponse({"result": "Contentation created successfully"})
+        return JSONResponse({"result": self.stored_blocks})
           
             
         # 1. descrever a API REST
