@@ -141,15 +141,7 @@ class Main(KytosNApp):
 
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
-        """List blocks performed so far."""
-
-        #response = requests.get(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-        #if response.status_code != 200:
-         #   raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-
-        #print (self.stored_blocks)
-          
-        #self.print_block_list(self)
+        """List blocks performed so far."""        
         return JSONResponse({"result": self.stored_blocks})
           
             
