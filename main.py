@@ -25,8 +25,7 @@ class Main(KytosNApp):
         #                                     {'command': '<add|delete>',
         #                                      'block': {block_dict}}]}}}
         log.info("Starting Kytos contention_block NApp!")
-        self.stored_blocks = []
-        self.stored_blocks2 = {"blocks": {}}
+        self.stored_blocks = {"blocks": {}}
         """
         stored_blocks = { "blocks": {
             "block_id" : {
@@ -116,7 +115,7 @@ class Main(KytosNApp):
         port_no = data.get("interface")
         port_no = int(port_no)
       
-        self.stored_blocks2["blocks"][block_id] = {
+        self.stored_blocks.append["blocks"][block_id] = {
             "switch": data["switch"],
             "interface": port_no,
             "match": data.get("match"),
