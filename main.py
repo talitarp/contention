@@ -121,8 +121,8 @@ class Main(KytosNApp):
             "switch": data["switch"],
             "interface": port_no,
             "match": data.get("match"),
-	      }
-    return block_id
+	}
+        return block_id
         
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
