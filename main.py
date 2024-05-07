@@ -22,6 +22,7 @@ class Main(KytosNApp):
         """
         log.info("Starting Kytos contention_block NApp!")
         self.stored_blocks = {"blocks": {}}
+	self.list_blocks = []
         """
         stored_blocks = {"blocks": {
             "block_id" : {
@@ -111,7 +112,7 @@ class Main(KytosNApp):
         port_no = data.get("interface")
         port_no = int(port_no)
       
-        self.stored_blocks.append["blocks"][block_id] = {
+        self.stored_blocks["blocks"][block_id] = {
             "switch": data["switch"],
             "interface": port_no,
             "match": data.get("match"),
