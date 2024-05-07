@@ -147,7 +147,7 @@ class Main(KytosNApp):
             return JSONResponse(f"result: Contentation created successfully ID {block_id}")
 
         if (data in self.stored_blocks): 
-             return JSONResponse({"result: "Rule already exists. Contentation doesn't created"})
+             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
       
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
