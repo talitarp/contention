@@ -135,8 +135,9 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-        self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
-        log.info(f"Update block list DELETE={data}")
+        while ("vlan" in self.stored_blocks:): #scan the list and delete all rules from the mentioned vlan
+            self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
+            log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
