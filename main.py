@@ -114,7 +114,7 @@ class Main(KytosNApp):
     def create_rule(self, data):
         block_id = uuid4().hex[:16]
       
-        port_no = data.get("interface", "")
+        port_no = data.get("interface")
         port_no = int(port_no)
       
         self.stored_blocks2["blocks"][block_id] = {
