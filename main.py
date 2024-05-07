@@ -2,6 +2,7 @@
 
 import requests
 import json
+from uuid import uuid4
 from kytos.core import KytosNApp, log, rest
 from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
@@ -19,12 +20,23 @@ class Main(KytosNApp):
 
             log.info("Starting Kytos contention_block NApp!")
         """
-        # Format of stored block data:
+        # Format of stored_blocks data:
         # {'Blocks': {'dpid_str': {'block_list': [
         #                                     {'command': '<add|delete>',
         #                                      'block': {block_dict}}]}}}
         log.info("Starting Kytos contention_block NApp!")
         self.stored_blocks = []
+        self.stored_blocks2 = {}
+        """
+        stored_blocks = { "blocks": {
+            "block_id" : {
+                "switch": "..."
+                "interface": "..."
+                "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...}
+                "action": "..."
+            }
+        }}
+        """
 
     def execute(self):
         """This method is executed right after the setup method execution.
@@ -72,7 +84,7 @@ class Main(KytosNApp):
         if "vlan" not in match:
             return False, "Missing mandatory field vlan on match"
 
-        expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "duration"]
+        expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan"]
         for key in match:
             if key not in expected_fields:
                 return False, f"Unexpected input match field: {key}"
@@ -98,6 +110,20 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
           
         return payload
+    
+    def create_rule(self, data):
+        block_id = uuid4().hex[:16]
+      
+        port_no = data.get("interface", "")
+        port_no = int(port_no)
+      
+        self.stored_blocks2["blocks"][block_id] = {
+            "switch": data["switch"]
+            "interface": port_no
+            "match": data.get("match")
+            "action": "..."
+	      }
+    return block_id
         
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
@@ -111,14 +137,15 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
 
-        if (data not in self.stored_blocks):
+        if (data not in self.stored_blocks): #add rule if not exists
             response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
              
-            self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
+            #self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
+            block_id = self.create_rule(data)
             log.info(f"Update block list ADD={data}")          
-            return JSONResponse({"result": "Contentation created successfully"})
+            return JSONResponse(f"result": "Contentation created successfully ID {block_id}")
 
         if (data in self.stored_blocks): 
              return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
