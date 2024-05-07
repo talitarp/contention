@@ -161,7 +161,7 @@ class Main(KytosNApp):
         #while (data in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
             #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
 
-	self.remove_rule(data)
+	#self.remove_rule(data)
         log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
 
