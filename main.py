@@ -134,8 +134,9 @@ class Main(KytosNApp):
         response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-
-        while ("vlan" in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
+          
+        # match = data.get("match")
+        while (payload in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
             self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
             log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
