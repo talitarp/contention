@@ -111,7 +111,7 @@ class Main(KytosNApp):
         port_no = data.get("interface")
         port_no = int(port_no)
       
-        self.stored_blocks["blocks"][block_id] = {
+        self.stored_blocks["blocks"][block_id].append = {
             "switch": data["switch"],
             "interface": port_no,
             "match": data.get("match"),
