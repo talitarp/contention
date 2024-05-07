@@ -118,10 +118,6 @@ class Main(KytosNApp):
 	}
         return block_id
 	    
-    def remove_rule(self, data):
-        
-
-        
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
         data = get_json_or_400(request, self.controller.loop) #access user request
