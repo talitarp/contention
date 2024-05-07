@@ -78,7 +78,7 @@ class Main(KytosNApp):
         if "vlan" not in match:
             return False, "Missing mandatory field vlan on match"
 
-        expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan"]
+        expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "block_id"]
         for key in match:
             if key not in expected_fields:
                 return False, f"Unexpected input match field: {key}"
@@ -87,12 +87,12 @@ class Main(KytosNApp):
       
     def get_payload(self, data, action):
         # Call flow_manager's REST API to create the flow
-        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
+        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "block_id": xxx}, "actions": []}]}
 
         if action == 'POST' or action == 'GET':
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"], "block_id": data["match"]["block_id"]}, "actions": []}]}
         if action == 'DELETE': 
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"], "block_id": data["match"]["block_id"]}, "actions": []}]}
        
         if "ipv4_src" in data["match"]:
             payload["flows"][0]["match"]["dl_type"] = 0x800
@@ -117,6 +117,10 @@ class Main(KytosNApp):
             "match": data.get("match"),
 	}
         return block_id
+	    
+    def remove_rule(self, data):
+        
+
         
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
@@ -130,17 +134,16 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
 
-        #if (data not in self.stored_blocks): #add rule if not exists
+        #if (data not in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
         response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
              
-            #self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
-        block_id = self.create_rule(data)
+        block_id = self.create_rule(data) #List needs to be updated whenever rule is inserted (Create_rule)
         log.info(f"Update block list ADD={data}")          
         return JSONResponse(f"result: Contentation created successfully ID {block_id}")
 
-        #if (data in self.stored_blocks): 
+        #if (data in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
              #return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
       
     @rest('/v1/contention_block', methods=['DELETE'])
@@ -159,9 +162,11 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
           
-        while (data in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
-            self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
-            log.info(f"Update block list DELETE={data}")
+        #while (data in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
+            #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
+
+	self.remove_rule(data)
+        log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
 
     @rest("/v1/contention_block", methods=['GET'])
