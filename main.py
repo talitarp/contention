@@ -26,7 +26,7 @@ class Main(KytosNApp):
         #                                      'block': {block_dict}}]}}}
         log.info("Starting Kytos contention_block NApp!")
         self.stored_blocks = []
-        self.stored_blocks2 = {}
+        self.stored_blocks2 = {"blocks": {}}
         """
         stored_blocks = { "blocks": {
             "block_id" : {
