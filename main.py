@@ -22,7 +22,6 @@ class Main(KytosNApp):
         """
         log.info("Starting Kytos contention_block NApp!")
         self.stored_blocks = {"blocks": {}}
-	self.list_blocks = []
         """
         stored_blocks = {"blocks": {
             "block_id" : {
