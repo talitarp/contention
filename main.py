@@ -30,10 +30,9 @@ class Main(KytosNApp):
         """
         stored_blocks = { "blocks": {
             "block_id" : {
-                "switch": "..."
-                "interface": "..."
-                "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...}
-                "action": "..."
+                "switch": "...",
+                "interface": "...",
+                "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...},
             }
         }}
         """
