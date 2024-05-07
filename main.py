@@ -117,7 +117,7 @@ class Main(KytosNApp):
 
         if (data in self.stored_blocks): 
             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
-        elif:
+        if (data not in self.stored_blocks):
             self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
             log.info(f"Update block list ADD={data}")          
             return JSONResponse({"result": "Contentation created successfully"})
