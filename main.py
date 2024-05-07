@@ -20,18 +20,14 @@ class Main(KytosNApp):
 
             log.info("Starting Kytos contention_block NApp!")
         """
-        # Format of stored_blocks data:
-        # {'Blocks': {'dpid_str': {'block_list': [
-        #                                     {'command': '<add|delete>',
-        #                                      'block': {block_dict}}]}}}
         log.info("Starting Kytos contention_block NApp!")
         self.stored_blocks = {"blocks": {}}
         """
-        stored_blocks = { "blocks": {
+        stored_blocks = {"blocks": {
             "block_id" : {
-                "switch": "...",
-                "interface": "...",
-                "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...},
+            "switch": "...",
+            "interface": "...",
+            "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...},
             }
         }}
         """
@@ -134,18 +130,18 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
 
-        if (data not in self.stored_blocks): #add rule if not exists
-            response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-            if response.status_code != 202:
-                raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+        #if (data not in self.stored_blocks): #add rule if not exists
+        response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        if response.status_code != 202:
+            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
              
             #self.stored_blocks.append(data) # List needs to be updated whenever rule is inserted
-            block_id = self.create_rule(data)
-            log.info(f"Update block list ADD={data}")          
-            return JSONResponse(f"result: Contentation created successfully ID {block_id}")
+         block_id = self.create_rule(data)
+         log.info(f"Update block list ADD={data}")          
+         return JSONResponse(f"result: Contentation created successfully ID {block_id}")
 
-        if (data in self.stored_blocks): 
-             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
+        #if (data in self.stored_blocks): 
+             #return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
       
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
