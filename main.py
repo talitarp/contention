@@ -136,7 +136,7 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
           
         match = data.get("match")
-        while (match in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
+        while (data in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
             self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
             log.info(f"Update block list DELETE={data}")
         return JSONResponse({"result": "Contention deleted successfully"})
