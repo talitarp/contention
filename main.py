@@ -105,7 +105,7 @@ class Main(KytosNApp):
           
         return payload
     
-    def create_rule(self, data):
+    def add_rule(self, data):
         block_id = uuid4().hex[:16]
       
         port_no = data.get("interface")
@@ -116,6 +116,10 @@ class Main(KytosNApp):
             "interface": port_no,
             "match": data.get("match"),
 	}
+        return block_id
+	    
+    def remove_rule(self, data):
+        #TODO
         return block_id
 	    
     @rest('/v1/contention_block', methods=['POST'])
@@ -135,7 +139,7 @@ class Main(KytosNApp):
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
              
-        block_id = self.create_rule(data) #List needs to be updated whenever rule is inserted (Create_rule)
+        block_id = self.add_rule(data) #List needs to be updated whenever rule is inserted (add_rule)
         log.info(f"Update block list ADD={data}")          
         return JSONResponse(f"result: Contentation created successfully ID {block_id}")
 
@@ -161,9 +165,9 @@ class Main(KytosNApp):
         #while (data in self.stored_blocks): #scan the list and delete all rules from the mentioned vlan
             #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
 
-	#self.remove_rule(data)
+	block_id = self.remove_rule(data)
         log.info(f"Update block list DELETE={data}")
-        return JSONResponse({"result": "Contention deleted successfully"})
+        return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
 
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
