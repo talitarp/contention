@@ -105,7 +105,7 @@ class Main(KytosNApp):
         if "block_id" in data["match"]:
             payload["flows"][0]["match"]["block_id"] = data["match"]["block_id"]
 		
-	return payload
+        return payload
     
     def add_rule(self, data):
         block_id = uuid4().hex[:16]
