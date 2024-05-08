@@ -136,17 +136,17 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
 
-        if (data not in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
-            response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-            if response.status_code != 202:
-                raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+        #if (data not in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
+        response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        if response.status_code != 202:
+            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
              
-            block_id = self.add_rule(data) #List needs to be updated whenever rule is inserted (add_rule)
-            log.info(f"Update block list ADD={data}")          
-            return JSONResponse(f"result: Contentation created successfully ID {block_id}")
+        block_id = self.add_rule(data) #List needs to be updated whenever rule is inserted (add_rule)
+        log.info(f"Update block list ADD={data}")          
+        return JSONResponse(f"result: Contentation created successfully ID {block_id}")
 
-        if (data in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
-             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
+        #if (data in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
+             #return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
       
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
