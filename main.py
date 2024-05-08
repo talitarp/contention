@@ -102,7 +102,7 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
-	if "block_id" in data["match"]:
+        if "block_id" in data["match"]:
 	    payload["flows"][0]["match"]["block_id"] = data["match"]["block_id"]
           
         return payload
