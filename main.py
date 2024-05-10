@@ -108,7 +108,7 @@ class Main(KytosNApp):
         return payload
     
     def add_rule(self, data, payload, dpid):
-        if block_id not in self.stored_blocks["blocks"]: #APENAS POR SEGURANÇA. IMPROVAVEL TENTAR INSERIR MESMA REGRA COM MESMO ID
+        if data.get("block_id") not in self.stored_blocks["blocks"]: #APENAS POR SEGURANÇA. IMPROVAVEL TENTAR INSERIR MESMA REGRA COM MESMO ID
 	    
             response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
