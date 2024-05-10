@@ -108,29 +108,29 @@ class Main(KytosNApp):
         return payload
     
     def add_rule(self, data, payload, dpid):
-        #if (data not in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
+        if (data not in self.stored_blocks["blocks"]): #APENAS POR SEGURANÇA. IMPROVAVEL TENTAR INSERIR MESMA REGRA COM MESMO ID
 	    
-        response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-        if response.status_code != 202:
-            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+            response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+            if response.status_code != 202:
+                raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 		
-        block_id = uuid4().hex[:16]
+            block_id = uuid4().hex[:16]
       
-        port_no = data.get("interface")
-        port_no = int(port_no)
+            port_no = data.get("interface")
+            port_no = int(port_no)
       
-        self.stored_blocks["blocks"][block_id] = {
-            "switch": data["switch"],
-            "interface": port_no,
-            "match": data.get("match"),
-	}
+            self.stored_blocks["blocks"][block_id] = {
+                "switch": data["switch"],
+                "interface": port_no,
+                "match": data.get("match"),
+	    }
         return block_id
 	    
     def remove_rule(self, data, payload, dpid):
         response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-        self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
+        #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
         log.info(f"Update block list DELETE={data}")
         return block_id
 	    
