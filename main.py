@@ -147,7 +147,7 @@ class Main(KytosNApp):
 
         if (data in self.stored_blocks["blocks"]): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
-	else:
+        else:
             block_id = self.add_rule(data, payload, dpid) #List needs to be updated whenever rule is inserted (add_rule)
             log.info(f"Update block list ADD={data}")          
             return JSONResponse(f"result: Contentation created successfully ID {block_id}")
