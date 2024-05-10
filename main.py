@@ -120,7 +120,7 @@ class Main(KytosNApp):
             "interface": port_no,
             "match": data.get("match"),
 	}
-        return true
+        return true, "success"
 	    
     def remove_rule(self, data, payload, dpid):
         response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
