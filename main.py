@@ -142,7 +142,7 @@ class Main(KytosNApp):
         action = 'POST'
         payload = self.get_payload(data, action)
         dpid = data["switch"]
-	block_id = uuid4().hex[:16]
+        block_id = uuid4().hex[:16]
 	    
         if "block_id" in data["match"]: #Para verificação se tentar inserir um ID já existente (proximo if)
             block_id = data["match"]["block_id"]
