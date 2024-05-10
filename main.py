@@ -107,23 +107,21 @@ class Main(KytosNApp):
 		
         return payload
     
-    def add_rule(self, data, payload, dpid):
-        if data.get("block_id") not in self.stored_blocks["blocks"]: #APENAS POR SEGURANÇA. IMPROVAVEL TENTAR INSERIR MESMA REGRA COM MESMO ID
-	    
-            response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-            if response.status_code != 202:
-                raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
+    def add_rule(self, data, payload, dpid):	    
+        response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+        if response.status_code != 202:
+            raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 		
-            block_id = uuid4().hex[:16]
+        block_id = uuid4().hex[:16]
       
-            port_no = data.get("interface")
-            port_no = int(port_no)
+        port_no = data.get("interface")
+        port_no = int(port_no)
       
-            self.stored_blocks["blocks"][block_id] = {
-                "switch": data["switch"],
-                "interface": port_no,
-                "match": data.get("match"),
-	    }
+        self.stored_blocks["blocks"][block_id] = {
+            "switch": data["switch"],
+            "interface": port_no,
+            "match": data.get("match"),
+	}
         return block_id
 	    
     def remove_rule(self, data, payload, dpid):
@@ -147,12 +145,12 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
 
-        #if (data in self.stored_blocks): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
-            #return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
-	#else:
-        block_id = self.add_rule(data, payload, dpid) #List needs to be updated whenever rule is inserted (add_rule)
-        log.info(f"Update block list ADD={data}")          
-        return JSONResponse(f"result: Contentation created successfully ID {block_id}")
+        if (data in self.stored_blocks["blocks"]): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
+            return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
+	else:
+            block_id = self.add_rule(data, payload, dpid) #List needs to be updated whenever rule is inserted (add_rule)
+            log.info(f"Update block list ADD={data}")          
+            return JSONResponse(f"result: Contentation created successfully ID {block_id}")
       
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
