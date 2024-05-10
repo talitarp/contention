@@ -147,8 +147,9 @@ class Main(KytosNApp):
         if "block_id" in data["match"]: #Para verificação se tentar inserir um ID já existente (proximo if)
             block_id = data["match"]["block_id"]
 		
-        if (data in self.stored_blocks["blocks"][block_id]["switch"]["interface"]["match"]): #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
-            return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
+        if (block_id in self.stored_blocks["blocks"]):
+	    if (data["match"]=self.stored_blocks["blocks"]["match"]
+                return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
         else:
             if (self.add_rule(data, payload, dpid, block_id)): #List needs to be updated whenever rule is inserted (add_rule)
                 log.info(f"Update block list ADD={data}")          
