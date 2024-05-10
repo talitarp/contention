@@ -167,7 +167,7 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
         
-        self.remove_rule(data)
+        self.remove_rule(data, payload, dpid)
         log.info(f"Update block list DELETE={data}")
         return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
 
