@@ -144,7 +144,10 @@ class Main(KytosNApp):
         action = 'POST'
         payload = self.get_payload(data, action)
         dpid = data["switch"]
-
+	    
+        if "block_id" in data["match"]: #Para verificação se tentar inserir um ID já existente (proximo if)
+            block_id = data["match"]["block_id"]
+		
         if data in self.stored_blocks["blocks"][block_id]["switch"]["interface"]["match"]: #FUNCIONAVA COM A LISTA. PRECISO VERIFICAR PARA O DICIONARIO
             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
         else:
