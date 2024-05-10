@@ -148,7 +148,7 @@ class Main(KytosNApp):
             block_id = data["match"]["block_id"]
 		
         if (block_id in self.stored_blocks["blocks"]):
-            if (data["match"]=self.stored_blocks["blocks"][block_id]["match"]):
+            if (data["match"] in self.stored_blocks["blocks"][block_id]["match"]):
                 return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
         else:
             if (self.add_rule(data, payload, dpid, block_id)): #List needs to be updated whenever rule is inserted (add_rule)
