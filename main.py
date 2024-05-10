@@ -102,8 +102,8 @@ class Main(KytosNApp):
             payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
         if "ip_proto" in data["match"]:
             payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
-        if "block_id" in data["match"]:
-            payload["flows"][0]["match"]["block_id"] = data["match"]["block_id"]
+        if "block_id" in data:
+            payload["flows"][0]["block_id"] = data["block_id"]
 		
         return payload
     
@@ -144,8 +144,8 @@ class Main(KytosNApp):
         dpid = data["switch"]
         block_id = uuid4().hex[:16]
 	    
-        if "block_id" in data["match"]: #Para verificação se tentar inserir um ID já existente (proximo if)
-            block_id = data["match"]["block_id"]
+        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if)
+            block_id = data["block_id"]
 		
         if (block_id in self.stored_blocks["blocks"]):
             if (data["match"] in self.stored_blocks["blocks"][block_id]["match"]):
