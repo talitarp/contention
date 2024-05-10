@@ -144,8 +144,8 @@ class Main(KytosNApp):
         dpid = data["switch"]
         block_id = uuid4().hex[:16]
 	    
-        if ("block_id" in data.get("match")): #Para verificação se tentar inserir um ID já existente (proximo if)
-            block_id = data["block_id"]
+        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if)
+            block_id = data.get("block_id")
 		
         if (block_id in self.stored_blocks["blocks"]):
             if (data.get("match") in self.stored_blocks["blocks"][block_id]["match"]):
