@@ -31,6 +31,7 @@ class Main(KytosNApp):
             }
         }}
         """
+        self.list_blocks[]
 
     def execute(self):
         """This method is executed right after the setup method execution.
@@ -120,11 +121,13 @@ class Main(KytosNApp):
             "interface": port_no,
             "match": data.get("match"),
 	}
+        self.list_blocks.append(data)
         return True, "success"
 	    
     def remove_rule(self, data, payload, dpid, block_id):
         if (block_id in self.stored_blocks["blocks"]):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+            self.list_blocks.remove(data)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
             #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
@@ -151,8 +154,7 @@ class Main(KytosNApp):
         if (block_id in self.stored_blocks["blocks"]): #PRECISA TBM VERIFICAR APENAS O MATCH PARA NAO DEIXAR CRIAR
             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
         else:
-            teste=data.get("match")
-            if (teste not in self.stored_blocks["blocks"][block_id]["match"]):
+            if (data not in self.list_blocks):
                 if (self.add_rule(data, payload, dpid, block_id)): #List needs to be updated whenever rule is inserted (add_rule)
                     log.info(f"Update block list ADD={data}")          
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
