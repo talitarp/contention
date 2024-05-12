@@ -127,11 +127,9 @@ class Main(KytosNApp):
     def remove_rule(self, data, payload, dpid, block_id):
         if (block_id in self.stored_blocks["blocks"]):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
-            self.list_blocks.remove(data)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-            #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
-            log.info(f"Update block list DELETE={data}")
+            self.list_blocks.remove(data)
         return True, "success"
 	    
     @rest('/v1/contention_block', methods=['POST'])
@@ -173,9 +171,11 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
         
-        self.remove_rule(data, payload, dpid, block_id)
-        log.info(f"Update block list DELETE={data}")
-        return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
+        if (self.remove_rule(data, payload, dpid, block_id)):
+            log.info(f"Update block list DELETE={data}")
+            return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
+	else:
+            return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
 
     @rest("/v1/contention_block", methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
