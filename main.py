@@ -124,7 +124,7 @@ class Main(KytosNApp):
 	    
     def remove_rule(self, data, payload, dpid, block_id):
         if (block_id in self.stored_blocks["blocks"]):
-	    response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
+            response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
             #self.stored_blocks.remove(data) # List needs to be updated whenever rule is removed
