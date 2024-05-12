@@ -151,7 +151,8 @@ class Main(KytosNApp):
         if (block_id in self.stored_blocks["blocks"]): #PRECISA TBM VERIFICAR APENAS O MATCH PARA NAO DEIXAR CRIAR
             return JSONResponse({"result": "Rule already exists. Contentation doesn't created"})
         else:
-            if (data["match"] not in self.stored_blocks["blocks"][block_id]["match"]):
+            match=data.get["match"]
+            if (match not in self.stored_blocks["blocks"][block_id]["match"]):
                 if (self.add_rule(data, payload, dpid, block_id)): #List needs to be updated whenever rule is inserted (add_rule)
                     log.info(f"Update block list ADD={data}")          
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
