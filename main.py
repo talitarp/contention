@@ -155,7 +155,7 @@ class Main(KytosNApp):
                 if (self.add_rule(data, payload, dpid, block_id)): #List needs to be updated whenever rule is inserted (add_rule)
                     log.info(f"Update block list ADD={data}")          
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
-	    else:
+            else:
                 return JSONResponse({"result": "MATCH already exists in the list. Contentation doesn't created"})
       
     @rest('/v1/contention_block', methods=['DELETE'])
