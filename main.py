@@ -31,7 +31,7 @@ class Main(KytosNApp):
             }
         }}
         """
-        self.list_blocks[]
+        self.list_blocks = []
 
     def execute(self):
         """This method is executed right after the setup method execution.
