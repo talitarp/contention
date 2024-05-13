@@ -176,7 +176,7 @@ class Main(KytosNApp):
         if (self.remove_rule(data, payload, dpid, block_id)):
             log.info(f"Update block list DELETE={data}")
             return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
-	else:
+        else:
             return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
 
     @rest("/v1/contention_block", methods=['GET'])
