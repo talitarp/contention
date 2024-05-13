@@ -136,10 +136,11 @@ class Main(KytosNApp):
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 		    
-            del self.stored_blocks["blocks"][block_id]
+            #del self.stored_blocks["blocks"][block_id]
             #linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
             linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
-            self.list_blocks.remove(linha)
+            del self.stored_blocks["blocks"][block_id]
+	    self.list_blocks.remove(linha)
         return True, "success"
 	    
     @rest('/v1/contention_block', methods=['POST'])
