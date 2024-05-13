@@ -121,7 +121,8 @@ class Main(KytosNApp):
             "interface": port_no,
             "match": data.get("match"),
 	}
-        self.list_blocks.append(data)
+	linha = data["switch"] + port_no + data.get("match")
+        self.list_blocks.append(linha)
         return True, "success"
 	    
     def remove_rule(self, data, payload, dpid, block_id):
@@ -132,7 +133,7 @@ class Main(KytosNApp):
 		    
             del self.stored_blocks["blocks"][block_id]
 		
-            self.list_blocks.remove(data)
+            self.list_blocks.remove(payload)
         return True, "success"
 	    
     @rest('/v1/contention_block', methods=['POST'])
