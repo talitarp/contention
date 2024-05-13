@@ -172,7 +172,10 @@ class Main(KytosNApp):
         action = 'DELETE'
         payload = self.get_payload(data, action)
         dpid = data["switch"]
-        
+
+        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if)
+            block_id = data["block_id"]
+		
         if (self.remove_rule(data, payload, dpid, block_id)):
             log.info(f"Update block list DELETE={data}")
             return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
