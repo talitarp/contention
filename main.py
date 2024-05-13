@@ -129,9 +129,9 @@ class Main(KytosNApp):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-
-            self.list_blocks.remove(data)
+		    
             del self.stored_blocks["blocks"][block_id]
+            self.list_blocks.remove(data)
         return True, "success"
 	    
     @rest('/v1/contention_block', methods=['POST'])
@@ -173,7 +173,7 @@ class Main(KytosNApp):
         payload = self.get_payload(data, action)
         dpid = data["switch"]
 
-        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if)
+        if ("block_id" in data):
             block_id = data["block_id"]
 		
         if (self.remove_rule(data, payload, dpid, block_id)):
