@@ -180,8 +180,8 @@ class Main(KytosNApp):
         action = 'DELETE'
         payload = self.get_payload(data, action)
         #dpid = data["switch"]
-	block_id = data["block_id"]
-	dpid= self.stored_blocks["blocks"][block_id]["switch"]
+        block_id = data["block_id"]
+        dpid= self.stored_blocks["blocks"][block_id]["switch"]
 
         if (self.remove_rule(data, payload, dpid)):
             log.info(f"Update block list DELETE={data}")
