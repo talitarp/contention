@@ -129,7 +129,7 @@ class Main(KytosNApp):
         return True, "success"
 	    
     def remove_rule(self, data, payload, dpid):
-	block_id = data["block_id"]
+        block_id = data["block_id"]
         if (block_id in self.stored_blocks["blocks"]):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
