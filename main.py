@@ -130,7 +130,7 @@ class Main(KytosNApp):
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-            del self.stored_blocks[block_id]
+            del self.stored_blocks["blocks"][block_id]
             self.list_blocks.remove(data)
         return True, "success"
 	    
