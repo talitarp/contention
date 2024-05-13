@@ -172,9 +172,9 @@ class Main(KytosNApp):
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
         data = get_json_or_400(request, self.controller.loop) #access user request
-        result, msg = self.validate_input(data)
-        if not result:
-            raise HTTPException(400, f"Invalid request data: {msg}")
+        #result, msg = self.validate_input(data)
+       # if not result:
+            #raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
 
         action = 'DELETE'
