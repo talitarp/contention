@@ -122,7 +122,7 @@ class Main(KytosNApp):
             "match": data.get("match"),
 	}
 
-        linha = data["switch"] + port_no + data.get("match")
+        linha = data["switch"] + data.get("interface") + data.get("match")
         self.list_blocks.append(linha)
         return True, "success"
 	    
@@ -133,8 +133,8 @@ class Main(KytosNApp):
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 		    
             del self.stored_blocks["blocks"][block_id]
-		
-            self.list_blocks.remove(payload)
+            linha = data["switch"] + data.get("interface") + data.get("match")
+            self.list_blocks.remove(linha)
         return True, "success"
 	    
     @rest('/v1/contention_block', methods=['POST'])
