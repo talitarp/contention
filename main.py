@@ -121,7 +121,8 @@ class Main(KytosNApp):
             "interface": port_no,
             "match": data.get("match"),
 	}
-	linha = data["switch"] + port_no + data.get("match")
+
+        linha = data["switch"] + port_no + data.get("match")
         self.list_blocks.append(linha)
         return True, "success"
 	    
