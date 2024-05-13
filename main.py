@@ -93,7 +93,9 @@ class Main(KytosNApp):
         if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         if action == 'DELETE': 
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+	    block_id = data.get("block_id")
+            # payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
        
         if "ipv4_src" in data["match"]:
             payload["flows"][0]["match"]["dl_type"] = 0x800
@@ -126,14 +128,16 @@ class Main(KytosNApp):
         self.list_blocks.append(linha)
         return True, "success"
 	    
-    def remove_rule(self, data, payload, dpid, block_id):
+    def remove_rule(self, data, payload, dpid):
+	block_id = data["block_id"]
         if (block_id in self.stored_blocks["blocks"]):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 		    
             del self.stored_blocks["blocks"][block_id]
-            linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
+            #linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
+            linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
             self.list_blocks.remove(linha)
         return True, "success"
 	    
@@ -175,12 +179,11 @@ class Main(KytosNApp):
 
         action = 'DELETE'
         payload = self.get_payload(data, action)
-        dpid = data["switch"]
+        #dpid = data["switch"]
+	block_id = data["block_id"]
+	dpid= self.stored_blocks["blocks"][block_id]["switch"]
 
-        if ("block_id" in data):
-            block_id = data["block_id"]
-		
-        if (self.remove_rule(data, payload, dpid, block_id)):
+        if (self.remove_rule(data, payload, dpid)):
             log.info(f"Update block list DELETE={data}")
             return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
         else:
