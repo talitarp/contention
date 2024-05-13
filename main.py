@@ -140,7 +140,7 @@ class Main(KytosNApp):
             #linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
             linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
             del self.stored_blocks["blocks"][block_id]
-	    self.list_blocks.remove(linha)
+            self.list_blocks.remove(linha)
         return True, "success"
 	    
     @rest('/v1/contention_block', methods=['POST'])
