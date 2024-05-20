@@ -148,7 +148,7 @@ class Main(KytosNApp):
             self.list_blocks.remove(linha)
         return True, "success"
 	    
-    @rest('/v1/contention_block', methods=['POST'])
+    @rest('/v1/contention', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
         action = 'POST'
         data = get_json_or_400(request, self.controller.loop) #access user request
@@ -175,7 +175,7 @@ class Main(KytosNApp):
             else:
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
       
-    @rest('/v1/contention_block', methods=['DELETE'])
+    @rest('/v1/contention', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
         action = 'DELETE'
         data = get_json_or_400(request, self.controller.loop) #access user request
@@ -195,7 +195,7 @@ class Main(KytosNApp):
         else:
             return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
 
-    @rest("/v1/contention_block", methods=['GET'])
+    @rest("/v1/contention", methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
         """List blocks performed so far."""        
         return JSONResponse({"result": self.stored_blocks})
