@@ -195,7 +195,7 @@ class Main(KytosNApp):
         else:
             return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
 
-    @rest("/v1/contention", methods=['GET'])
+    @rest('/v1/contention', methods=['GET'])
     def list_contention_block(self, request: Request) -> JSONResponse:
         """List blocks performed so far."""        
         return JSONResponse({"result": self.stored_blocks})
