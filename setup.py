@@ -266,7 +266,7 @@ def symlink_if_different(path, target):
 
 setup(name=f'{NAPP_USERNAME}_{NAPP_NAME}',
       version=NAPP_VERSION,
-      description=' Contention Kytos Napp',
+      description='Contention Kytos Napp',
       url=f'http://github.com/talitarp/contention',
       author='Talita R Pinheiro',
       author_email='talitapinheiro@ufba.br',
