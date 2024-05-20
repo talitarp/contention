@@ -1,4 +1,4 @@
-"""Main module of talitarp/contention_block Kytos Network Application."""
+"""Main module of talitarp/contention Kytos Network Application."""
 
 import requests
 import json
@@ -10,7 +10,7 @@ from kytos.core.rest_api import (HTTPException, JSONResponse, Request,
                                  get_json_or_400)
 
 class Main(KytosNApp):
-    """Main class of talitarp/contention_block NApp.This class is the entry point for this napp."""
+    """Main class of talitarp/contention NApp.This class is the entry point for this napp."""
 
     def setup(self):
         """Replace the '__init__' method for the KytosNApp subclass.
@@ -20,7 +20,7 @@ class Main(KytosNApp):
 
             log.info("Starting Kytos contention_block NApp!")
         """
-        log.info("Starting Kytos contention_block NApp!")
+        log.info("Starting Kytos contention NApp!")
         self.stored_blocks = {"blocks": {}}
         """
         stored_blocks = {"blocks": {
@@ -53,42 +53,47 @@ class Main(KytosNApp):
             It is not necessary in this NApp.
         """
       
-    def validate_input(self, data):
-        # TODO: validate all user inputs
-        mandatory_fields = ["switch", "interface", "match"]
-        # check switch
-        switch_id = data.get("switch")
-        if not switch_id or switch_id not in self.controller.switches:
-            return False, f"Invalid switch: {switch_id}"
-        switch = self.controller.switches[switch_id]
+    def validate_input(self, data, action):
+        if action == 'POST':
+            # TODO: validate all user inputs
+            mandatory_fields = ["switch", "interface", "match"]
+            # check switch
+            switch_id = data.get("switch")
+            if not switch_id or switch_id not in self.controller.switches:
+                return False, f"Invalid switch: {switch_id}"
+            switch = self.controller.switches[switch_id]
 
-        # check interface (port_no 1)
-        try:
-            port_no = data.get("interface", "")
-            port_no = int(port_no)
-        except:
-            return False, f"Invalid interface: {port_no}"
-        if port_no not in switch.interfaces:
-            return False, f"Unknown interface: {port_no}"
-        interface = switch.interfaces[port_no]
+            # check interface (port_no 1)
+            try:
+                port_no = data.get("interface", "")
+                port_no = int(port_no)
+            except:
+                return False, f"Invalid interface: {port_no}"
+            if port_no not in switch.interfaces:
+                return False, f"Unknown interface: {port_no}"
+            interface = switch.interfaces[port_no]
 
-        # check matching fields
-        match = data.get("match")
-        if not match:
-            return False, f"Invalid match: {match}"
-        if "vlan" not in match:
-            return False, "Missing mandatory field vlan on match"
+            # check matching fields
+            match = data.get("match")
+            if not match:
+                return False, f"Invalid match: {match}"
+            if "vlan" not in match:
+               return False, "Missing mandatory field vlan on match"
 
-        expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "block_id"]
-        for key in match:
-            if key not in expected_fields:
-                return False, f"Unexpected input match field: {key}"
-
+            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "block_id"]
+            for key in match:
+                if key not in expected_fields:
+                    return False, f"Unexpected input match field: {key}"
+			
+        if action == 'DELETE':
+	    if "block_id" not in data:
+                return False, "Missing mandatory field block_id on data"
+            
         return True, "success"
       
     def get_payload(self, data, action):
         # Call flow_manager's REST API to create the flow
-        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "block_id": xxx}, "actions": []}]}
+        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
 
         if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
@@ -145,14 +150,13 @@ class Main(KytosNApp):
 	    
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
-	    
+        action = 'POST'
         data = get_json_or_400(request, self.controller.loop) #access user request
-        result, msg = self.validate_input(data)
+        result, msg = self.validate_input(data, action)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"ADD BLOCK contention_block called with data={data}")
       
-        action = 'POST'
         payload = self.get_payload(data, action)
         dpid = data["switch"]
         block_id = uuid4().hex[:16]
@@ -165,21 +169,21 @@ class Main(KytosNApp):
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
             if (linha not in self.list_blocks):
-                if (self.add_rule(data, payload, dpid, block_id)): #List needs to be updated whenever rule is inserted (add_rule)
-                    log.info(f"Update block list ADD={data}")          
+                if (self.add_rule(data, payload, dpid, block_id)): #Rule is inserted (add_rule)
+                    log.info(f"Update block list ADD={data}")  
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
             else:
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
       
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
+        action = 'DELETE'
         data = get_json_or_400(request, self.controller.loop) #access user request
-        #result, msg = self.validate_input(data)
-       # if not result:
+        result, msg = self.validate_input(data, action)
+        if not result:
             #raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
 
-        action = 'DELETE'
         payload = self.get_payload(data, action)
         #dpid = data["switch"]
         block_id = data["block_id"]
