@@ -86,7 +86,7 @@ class Main(KytosNApp):
                     return False, f"Unexpected input match field: {key}"
 			
         if action == 'DELETE':
-	    if "block_id" not in data:
+            if "block_id" not in data:
                 return False, "Missing mandatory field block_id on data"
             
         return True, "success"
