@@ -21,7 +21,7 @@ if 'bdist_wheel' in sys.argv:
 # Paths setup with virtualenv detection
 BASE_ENV = Path(os.environ.get('VIRTUAL_ENV', '/'))
 
-NAPP_NAME = 'contention'
+NAPP_NAME = 'contention_block'
 NAPP_USERNAME = 'talitarp'
 NAPP_VERSION = '1.0.0'
 
