@@ -181,7 +181,7 @@ class Main(KytosNApp):
         data = get_json_or_400(request, self.controller.loop) #access user request
         result, msg = self.validate_input(data, action)
         if not result:
-            #raise HTTPException(400, f"Invalid request data: {msg}")
+            raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
 	    
         payload = self.get_payload(data, action)
