@@ -18,7 +18,7 @@ class Main(KytosNApp):
             The setup method is automatically called by the controller when your
             application is loaded.
 
-            log.info("Starting Kytos contention_block NApp!")
+            log.info("Starting Kytos contention NApp!")
         """
         log.info("Starting Kytos contention NApp!")
         self.stored_blocks = {"blocks": {}}
