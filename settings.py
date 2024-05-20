@@ -1,1 +1,1 @@
-"""Module for lock containment used in talitarp/contention_block."""
+"""Module for lock containment used in talitarp/contention."""
