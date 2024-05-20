@@ -183,7 +183,7 @@ class Main(KytosNApp):
         if not result:
             #raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
-
+	    
         payload = self.get_payload(data, action)
         #dpid = data["switch"]
         block_id = data["block_id"]
