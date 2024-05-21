@@ -54,7 +54,7 @@ class Main(KytosNApp):
         """
       
     def validate_input(self, data, action):
-        if action == 'POST':
+        if action == 'POST' or action == 'GET':
             # TODO: validate all user inputs
             mandatory_fields = ["switch", "interface", "match"]
             # check switch
@@ -95,7 +95,7 @@ class Main(KytosNApp):
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
 
-        if action == 'POST':
+        if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         
             if "ipv4_src" in data["match"]:
