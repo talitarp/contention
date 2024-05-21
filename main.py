@@ -95,7 +95,7 @@ class Main(KytosNApp):
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
 
-        if action == 'POST' or action == 'GET':
+        if action == 'POST':
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         
             if "ipv4_src" in data["match"]:
@@ -104,6 +104,12 @@ class Main(KytosNApp):
             if "ipv4_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
                 payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
+            if "ipv6_src" in data["match"]:
+                payload["flows"][0]["match"]["dl_type"] = 0x800
+                payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv6_src"]
+            if "ipv6_dst" in data["match"]:
+                payload["flows"][0]["match"]["dl_type"] = 0x800
+                payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv6_dst"]
             if "ip_proto" in data["match"]:
                 payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
             if "block_id" in data:
