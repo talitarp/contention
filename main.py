@@ -106,10 +106,10 @@ class Main(KytosNApp):
                 payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
             if "ipv6_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x86DD
-                payload["flows"][0]["match"]["nw_src"] = str(data["match"]["ipv6_src"])
+                payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv6_src"]
             if "ipv6_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x86DD
-                payload["flows"][0]["match"]["nw_dst"] = str(data["match"]["ipv6_dst"])
+                payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv6_dst"]
             if "ip_proto" in data["match"]:
                 payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
             if "block_id" in data:
