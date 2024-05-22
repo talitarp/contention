@@ -80,7 +80,7 @@ class Main(KytosNApp):
             if "vlan" not in match:
                return False, "Missing mandatory field vlan on match"
 
-            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "block_id"]
+            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst"]
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
@@ -93,7 +93,7 @@ class Main(KytosNApp):
       
     def get_payload(self, data, action):
         # Call flow_manager's REST API to create the flow
-        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx}, "actions": []}]}
+        #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
 
         if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
@@ -112,8 +112,15 @@ class Main(KytosNApp):
                 payload["flows"][0]["match"]["ipv6_dst"] = data["match"]["ipv6_dst"]
             if "ip_proto" in data["match"]:
                 payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
-            if "block_id" in data:
-                payload["flows"][0]["block_id"] = data["block_id"]
+            if "tcp_src" in data["match"]:
+                payload["flows"][0]["match"]["tp_src"] = data["match"]["tcp_src"]
+            if "tcp_dst" in data["match"]:
+                payload["flows"][0]["match"]["tp_dst"] = data["match"]["tcp_dst"]
+            if "udp_src" in data["match"]:
+                payload["flows"][0]["match"]["udp_src"] = data["match"]["udp_src"]
+            if "udp_dst" in data["match"]:
+                payload["flows"][0]["match"]["udp_dst"] = data["match"]["udp_dst"]
+
 
         if action == 'DELETE': 
             block_id = data.get("block_id")
@@ -167,10 +174,10 @@ class Main(KytosNApp):
         dpid = data["switch"]
         block_id = uuid4().hex[:16]
 	    
-        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if)
+        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if) #NAO PRECISA
             block_id = data["block_id"]
 		
-        if (block_id in self.stored_blocks["blocks"]): #PRECISA TBM VERIFICAR APENAS O MATCH PARA NAO DEIXAR CRIAR
+        if (block_id in self.stored_blocks["blocks"]): #PRECISA TBM VERIFICAR APENAS O MATCH PARA NAO DEIXAR CRIAR #NAO PRECISA MAIS
             return JSONResponse({"result": "Index ID already exists. Contentation doesn't created"})
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
