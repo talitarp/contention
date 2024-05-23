@@ -94,12 +94,13 @@ class Main(KytosNApp):
             
         return True, "success"
       
-    def get_payload(self, data, action):
+    def get_payload(self, data, block_id, action):
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
 
+	cookie = int(COOKIE_PREFIX + block_id, 16)
         if action == 'POST' or action == 'GET':
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
@@ -128,7 +129,7 @@ class Main(KytosNApp):
         if action == 'DELETE': 
             block_id = data.get("block_id")
             # payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
 		
         return payload
     
@@ -173,9 +174,9 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"ADD BLOCK contention_block called with data={data}")
       
-        payload = self.get_payload(data, action)
         dpid = data["switch"]
-        block_id = uuid4().hex[:16]
+        block_id = uuid4().hex[:14]
+        payload = self.get_payload(data, block_id, action)
 	    
         if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if) #NAO PRECISA
             block_id = data["block_id"]
@@ -200,10 +201,10 @@ class Main(KytosNApp):
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"DELETE BLOCK contention_block called with data={data}")
 	    
-        payload = self.get_payload(data, action)
         #dpid = data["switch"]
         block_id = data["block_id"]
         dpid= self.stored_blocks["blocks"][block_id]["switch"]
+        payload = self.get_payload(data, block_id, action)
 
         if (self.remove_rule(data, payload, dpid)):
             log.info(f"Update block list DELETE={data}")
