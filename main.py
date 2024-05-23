@@ -8,6 +8,9 @@ from kytos.core import KytosEvent
 from kytos.core.helpers import listen_to
 from kytos.core.rest_api import (HTTPException, JSONResponse, Request,
                                  get_json_or_400)
+from .settings import (
+    COOKIE_PREFIX,
+)
 
 class Main(KytosNApp):
     """Main class of talitarp/contention NApp.This class is the entry point for this napp."""
