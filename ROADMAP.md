@@ -5,7 +5,7 @@
 - Add more matching fields, for instance: ipv4 source and destination, ipv6 source and destination, ip protocol, tcp/udp source/destination port, etc (OK)
 - Provide means to list active blocking rules (OK)
 - When creating a blocking rule, we should assign a unique identifier for that rule (the identifier will be used later to remove the blocking or eventually modify it) (OK)
-- Provide means to asssociate the Block Rule ID to the Flow Cookie ID
+- Provide means to asssociate the Block Rule ID to the Flow Cookie ID (OK)
 - Each Blocking rule should be associated with a Owner
   - Listing the Blocking Rules should also allow filtering by owner
   - Deleting Block Rules should only be allowed from the same owner (??) -- authorization / hierarchy
