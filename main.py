@@ -87,6 +87,8 @@ class Main(KytosNApp):
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
+            # check matching TCP or UDP and if not in IPV4 or IPV6
+            #aparecer mensagem de erro
 			
         if action == 'DELETE':
             if "block_id" not in data:
@@ -98,11 +100,10 @@ class Main(KytosNApp):
         # Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
 
-        #cookie = COOKIE_PREFIX + "" + block_id
-        cookie = "OxB0" + "" + block_id
-        #cookie = hex(int(cookie, 16)) #NAO FUNCIONA
+        cookie = COOKIE_PREFIX + block_id
+        cookie = int(cookie, 16)
         if action == 'POST' or action == 'GET':
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
@@ -119,19 +120,23 @@ class Main(KytosNApp):
             if "ip_proto" in data["match"]:
                 payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
             if "tcp_src" in data["match"]:
+                #payload["flows"][0]["match"]["nw_proto"] = 6 
                 payload["flows"][0]["match"]["tp_src"] = data["match"]["tcp_src"]
             if "tcp_dst" in data["match"]:
+		#payload["flows"][0]["match"]["nw_proto"] = 6
                 payload["flows"][0]["match"]["tp_dst"] = data["match"]["tcp_dst"]
             if "udp_src" in data["match"]:
+		#payload["flows"][0]["match"]["nw_proto"] = 17
                 payload["flows"][0]["match"]["udp_src"] = data["match"]["udp_src"]
             if "udp_dst" in data["match"]:
+		#payload["flows"][0]["match"]["nw_proto"] = 17
                 payload["flows"][0]["match"]["udp_dst"] = data["match"]["udp_dst"]
 
 
         if action == 'DELETE': 
             block_id = data.get("block_id")
             # payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
-            payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
+            payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
 		
         return payload
     
