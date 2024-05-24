@@ -99,7 +99,7 @@ class Main(KytosNApp):
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
 
         #cookie = COOKIE_PREFIX + "" + block_id
-        cookie = "OxB0" + "" + block_id
+        cookie = int ("OxB0" + block_id,16)
         if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         
