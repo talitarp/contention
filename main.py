@@ -100,7 +100,7 @@ class Main(KytosNApp):
 
         #cookie = COOKIE_PREFIX + "" + block_id
         cookie = "OxB0" + "" + block_id
-	cookie = cookie.decod("hex")
+        cookie = cookie.decod("hex")
         if action == 'POST' or action == 'GET':
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
         
