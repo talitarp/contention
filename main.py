@@ -87,8 +87,12 @@ class Main(KytosNApp):
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
-            # check matching TCP or UDP and if not in IPV4 or IPV6
-            #aparecer mensagem de erro
+			
+            #check matching fields: TCP or UDP (Mandatory IPV4 or IPV6 specification)
+            if ("tcp_src" or "tcp_dst" or "udp_src" or "tcp_dst") in match:
+                if ("ipv4_src" or "ipv4_dst" or "ipv6_src", "ipv6_dst") not in math:
+                    return False, "Missing mandatory ipv4 or ipv6 on match"
+			
 			
         if action == 'DELETE':
             if "block_id" not in data:
