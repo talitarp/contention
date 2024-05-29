@@ -90,11 +90,8 @@ class Main(KytosNApp):
 			
             #check matching fields: TCP or UDP (Mandatory IPV4 or IPV6 specification)
             if "tcp_src" in match or "tcp_dst" in match:
-                if "ipv4_src" not in match:
-                    if "ipv4_dst" not in match:
-                        if "ipv6_src" not in match:
-                            if "ipv6_dst" not in match:
-                                return False, f"Missing mandatory ipv4 or ipv6 on match"
+                if "ipv4_src" not in match or "ipv4_dst" not in match or "ipv6_src" not in match or "ipv6_dst" not in match :
+                    return False, f"Missing mandatory ipv4 or ipv6 on match"
 			
         if action == 'DELETE':
             if "block_id" not in data:
