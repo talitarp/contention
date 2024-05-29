@@ -101,7 +101,7 @@ class Main(KytosNApp):
         return True, "success"
       
     def get_payload(self, data, block_id, action):
-        # Call flow_manager's REST API to create the flow
+        #Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
 
         cookie = COOKIE_PREFIX + block_id
@@ -124,16 +124,16 @@ class Main(KytosNApp):
             if "ip_proto" in data["match"]:
                 payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
             if "tcp_src" in data["match"]:
-                #payload["flows"][0]["match"]["nw_proto"] = 6 
+                payload["flows"][0]["match"]["nw_proto"] = 6 
                 payload["flows"][0]["match"]["tp_src"] = data["match"]["tcp_src"]
             if "tcp_dst" in data["match"]:
-		#payload["flows"][0]["match"]["nw_proto"] = 6
+                payload["flows"][0]["match"]["nw_proto"] = 6
                 payload["flows"][0]["match"]["tp_dst"] = data["match"]["tcp_dst"]
             if "udp_src" in data["match"]:
-		#payload["flows"][0]["match"]["nw_proto"] = 17
+                payload["flows"][0]["match"]["nw_proto"] = 17
                 payload["flows"][0]["match"]["udp_src"] = data["match"]["udp_src"]
             if "udp_dst" in data["match"]:
-		#payload["flows"][0]["match"]["nw_proto"] = 17
+                payload["flows"][0]["match"]["nw_proto"] = 17
                 payload["flows"][0]["match"]["udp_dst"] = data["match"]["udp_dst"]
 
 
