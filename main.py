@@ -89,7 +89,7 @@ class Main(KytosNApp):
                     return False, f"Unexpected input match field: {key}"
 			
             #check matching fields: TCP or UDP (Mandatory IPV4 or IPV6 specification)
-            if "tcp_src" or "tcp_dst" or "udp_src" or "udp_dst" in match:
+            if "tcp_src" or "tcp_dst" in match:
                 if "ipv4_src" not in match:
                     if "ipv4_dst" not in match:
                         if "ipv6_src" not in match:
