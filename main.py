@@ -83,7 +83,7 @@ class Main(KytosNApp):
             if "vlan" not in match:
                return False, "Missing mandatory field vlan on match"
 
-            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst"]
+            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst"]
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
@@ -138,6 +138,10 @@ class Main(KytosNApp):
             if "udp_dst" in data["match"]:
                 payload["flows"][0]["match"]["nw_proto"] = 17
                 payload["flows"][0]["match"]["udp_dst"] = data["match"]["udp_dst"]
+            if "mac_src" in data["match"]:
+                payload["flows"][0]["match"]["dl_src"] = data["match"]["mac_src"]
+            if "mac_dst" in data["match"]:
+                payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
 
 
         if action == 'DELETE': 
