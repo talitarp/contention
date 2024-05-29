@@ -90,7 +90,7 @@ class Main(KytosNApp):
 			
             #check matching fields: TCP or UDP (Mandatory IPV4 or IPV6 specification)
             #if ("tcp_src" or "tcp_dst" or "udp_src" or "tcp_dst") in match:
-            if "tcp_dst" in match:
+            if "tcp_src" or "tcp_dst" in match:
                 if "ipv4_dst" not in match:
                 #if ("ipv4_src" or "ipv4_dst" or "ipv6_src", "ipv6_dst") not in match:
                     return False, f"Missing mandatory ipv4 or ipv6 on match"
