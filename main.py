@@ -178,7 +178,8 @@ class Main(KytosNApp):
             del self.stored_blocks["blocks"][block_id]
             self.list_blocks.remove(linha)
         return True, "success"
-	    
+
+    @rest('/v1/contention_redirect', methods=['POST'])
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
         action = 'POST'
@@ -186,7 +187,7 @@ class Main(KytosNApp):
         result, msg = self.validate_input(data, action)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"ADD BLOCK contention_block called with data={data}")
+        log.info(f"ADD BLOCK contention called with data={data}")
       
         dpid = data["switch"]
         block_id = uuid4().hex[:14]
@@ -205,7 +206,8 @@ class Main(KytosNApp):
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
             else:
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
-      
+
+    @rest('/v1/contention_redirect', methods=['DELETE'])
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
         action = 'DELETE'
