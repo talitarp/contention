@@ -282,7 +282,7 @@ class Main(KytosNApp):
             else:
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
 
- @rest('/v1/contention_block', methods=['DELETE'])
+    @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention_block(self, request: Request) -> JSONResponse:
         action = 'DELETE'
         data = get_json_or_400(request, self.controller.loop) #access user request
