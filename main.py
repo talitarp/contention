@@ -97,7 +97,7 @@ class Main(KytosNApp):
             redirect_to = data.get("redirect_to") 
             if redirect_to:
                 if "outport" not in redirect_to:
-			return False, f"Missing mandatory Outport on redirect_to"		    
+                    return False, f"Missing mandatory Outport on redirect_to"		    
 			
         if action == 'DELETE':
             if "block_id" not in data:
