@@ -114,7 +114,7 @@ class Main(KytosNApp):
         cookie = int(cookie, 16)
         if action == 'POST':
 		
-            if "redirect_to" not in data["match"]: # It's a block contention. Action is empty.
+            if "redirect_to" not in data: # It's a block contention. Action is empty.
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
             else: # It's a redirect contention. Action isn't empty.
                 # Add an action to send to the specified port
