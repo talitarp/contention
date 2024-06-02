@@ -83,21 +83,30 @@ class Main(KytosNApp):
             if "vlan" not in match:
                return False, "Missing mandatory field vlan on match"
 
-            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst"]
+            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst", "redirect_to", "outport"]
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
 			
             #check matching fields: TCP or UDP (Mandatory IPV4 or IPV6 specification)
-            if "tcp_src" in match or "tcp_dst" in match:
-                if "ipv4_src" not in match or "ipv4_dst" not in match or "ipv6_src" not in match or "ipv6_dst" not in match :
+            if "tcp_src" in match or "tcp_dst" in match or "udp_src" in match or "udp_dst" in match:
+                if "ipv4_src" not in match or "ipv4_dst" not in match or "ipv6_src" not in match or "ipv6_dst" not in match:
                     return False, f"Missing mandatory ipv4 or ipv6 on match"
+	   
+            #Only Redirect Contention, the field redirect is specification with outport, for example.
+            redirect_to = data.get("redirect_to") 
+            if redirect_to:
+                if "outport" not in redirect_to:
+			return False, f"Missing mandatory Outport on redirect_to"		    
 			
         if action == 'DELETE':
             if "block_id" not in data:
                 return False, "Missing mandatory field block_id on data"
             
         return True, "success"
+	    
+    def quarantine(self, redirect_to):
+        #TODO
       
     def get_payload(self, data, block_id, action):
         #Call flow_manager's REST API to create the flow
@@ -107,10 +116,13 @@ class Main(KytosNApp):
         cookie = int(cookie, 16)
         if action == 'POST':
 		
-            if "redirect_to" not in data["match"]: # It's a block contention. Action is empty.
+            if "redirect" not in data["match"]: # It's a block contention. Action is empty.
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
 	    else: # It's a redirect contention. Action isn't empty.
-                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+                # Add an action to send to the specified port
+                redirect_to = data.get(data["match"]["redirect_to"]["outport"]);
+		action = of.ofp_action_output(port=redirect_to)
+                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
         
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
@@ -142,8 +154,6 @@ class Main(KytosNApp):
                 payload["flows"][0]["match"]["dl_src"] = data["match"]["mac_src"]
             if "mac_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
-            if "redirect_to" in data["match"]:  #necessario especificar apenas na contenção do tipo redirect
-                payload["flows"][0]["match"]["dl_dst"] = data["match"]["redirect_to"]
 
         if action == 'DELETE': 
             block_id = data.get("block_id")
