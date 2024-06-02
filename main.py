@@ -116,10 +116,10 @@ class Main(KytosNApp):
 		
             if "redirect" not in data["match"]: # It's a block contention. Action is empty.
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
-	    else: # It's a redirect contention. Action isn't empty.
+            else: # It's a redirect contention. Action isn't empty.
                 # Add an action to send to the specified port
                 redirect_to = data.get(data["match"]["redirect_to"]["outport"]);
-		action = of.ofp_action_output(port=redirect_to)
+                action = of.ofp_action_output(port=redirect_to)
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
         
             if "ipv4_src" in data["match"]:
