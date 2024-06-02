@@ -1,5 +1,5 @@
 """Main module of talitarp/contention Kytos Network Application."""
-
+import pox.openflow.libopenflow_01 as of
 import requests
 import json
 from uuid import uuid4
