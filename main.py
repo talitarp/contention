@@ -104,10 +104,8 @@ class Main(KytosNApp):
                 return False, "Missing mandatory field block_id on data"
             
         return True, "success"
-	    
-    def quarantine(self, redirect_to):
-        #TODO
-      
+	       
+    
     def get_payload(self, data, block_id, action):
         #Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
