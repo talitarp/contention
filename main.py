@@ -1,7 +1,4 @@
 """Main module of talitarp/contention Kytos Network Application."""
-from pox.core import core
-import pox.openflow.libopenflow_01 as of
-
 import requests
 import json
 from uuid import uuid4
@@ -13,6 +10,9 @@ from kytos.core.rest_api import (HTTPException, JSONResponse, Request,
 from .settings import (
     COOKIE_PREFIX,
 )
+
+from pyof.v0x04.common.action import ActionOutput
+from pyof.v0x04.controller2switch.packet_out import PacketOut
 
 class Main(KytosNApp):
     """Main class of talitarp/contention NApp.This class is the entry point for this napp."""
@@ -121,7 +121,8 @@ class Main(KytosNApp):
             else: # It's a redirect contention. Action isn't empty.
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
-                action = of.ofp_action_output(port=redirect_to)
+                action = ActionOutput(port=redirect_to)
+                #action = of.ofp_action_output(port=redirect_to)
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
         
             if "ipv4_src" in data["match"]:
