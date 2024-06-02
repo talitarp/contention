@@ -121,9 +121,9 @@ class Main(KytosNApp):
             else: # It's a redirect contention. Action isn't empty.
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
-                action = ActionOutput(port=redirect_to)
+                ac = ActionOutput(port=redirect_to)
                 #action = of.ofp_action_output(port=redirect_to)
-                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
+                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [ac]}]}
         
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
