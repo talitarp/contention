@@ -122,7 +122,7 @@ class Main(KytosNApp):
             if "redirect_to" in data: # It's a redirect contention. Action isn't empty
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
-		parser = datapath.ofproto_parser
+                parser = datapath.ofproto_parser
                 action = parser.OFPActionOutput(redirect_to)
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
         
