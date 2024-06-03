@@ -196,7 +196,7 @@ class Main(KytosNApp):
 
             if type == 'DELETE_redirect':
                 linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
-            if type == 'DELETE_block:
+            if type == 'DELETE_block':
                 linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
 	
             del self.stored_blocks["blocks"][block_id]
