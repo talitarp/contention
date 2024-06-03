@@ -196,13 +196,13 @@ class Main(KytosNApp):
 
         if "redirect_to" in data:
             linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
-	else:
+        else:
             linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
 	
-            del self.stored_blocks["blocks"][block_id]
-            self.list_blocks.remove(linha)
+        del self.stored_blocks["blocks"][block_id]
+        self.list_blocks.remove(linha)
 		
-            return True, "success"
+        return True, "success"
 
     @rest('/v1/contention_redirect', methods=['POST'])
     def contention_redirect(self, request: Request) -> JSONResponse:
