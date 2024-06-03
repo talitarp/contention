@@ -185,7 +185,7 @@ class Main(KytosNApp):
                 "match": data.get("match"),
                 "redirect_to": data.get("redirect_to"),
 	    }
-            linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match") + str(data.get("redirect_to"))
+            linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) + str(data.get("redirect_to"))
 		
         self.list_blocks.append(linha)
         return True, "success"
