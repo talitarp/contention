@@ -187,18 +187,15 @@ class Main(KytosNApp):
         self.list_blocks.append(linha)
         return True, "success"
 	    
-    def remove_rule(self, data, payload, dpid, type):
+    def remove_rule(self, data, payload, dpid):
         block_id = data["block_id"]
         if (block_id in self.stored_blocks["blocks"]):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
     
-            linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
-		    
-            if type == 'POST_redirect': 
-                linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
-            
+            linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
+        
             del self.stored_blocks["blocks"][block_id]
             self.list_blocks.remove(linha)
 		
@@ -272,7 +269,7 @@ class Main(KytosNApp):
         dpid= self.stored_blocks["blocks"][block_id]["switch"]
         payload = self.get_payload(data, block_id, type)
 
-        if (self.remove_rule(data, payload, dpid, type)):
+        if (self.remove_rule(data, payload, dpid)):
             log.info(f"Update contention list DELETE={data}")
             return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
         else:
