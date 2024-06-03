@@ -162,20 +162,20 @@ class Main(KytosNApp):
 		
         return payload
 	
-    def add_rule(self, data, payload, dpid, block_id, type):	    
+    def add_rule(self, data, payload, dpid, block_id, linha):	    
         response = requests.post(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
         if response.status_code != 202:
             raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
       
         port_no = data.get("interface")
         port_no = int(port_no)
-	    
-        self.stored_blocks["blocks"][block_id] = {
-            "switch": data["switch"],
-            "interface": port_no,
-            "match": data.get("match"),
-        }
-        linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
+
+        if type == 'POST_redirect':
+            self.stored_blocks["blocks"][block_id] = {
+                "switch": data["switch"],
+                "interface": port_no,
+                "match": data.get("match"),
+            }
         
         if type == 'POST_redirect': 
             self.stored_blocks["blocks"][block_id] = {
@@ -184,8 +184,6 @@ class Main(KytosNApp):
                 "match": data.get("match"),
                 "redirect_to": data.get("redirect_to"),
 	    }
-            linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) + str(data.get("redirect_to"))
-		
         self.list_blocks.append(linha)
         return True, "success"
 	    
@@ -227,7 +225,7 @@ class Main(KytosNApp):
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) + str(data.get("redirect_to"))
             if (linha not in self.list_blocks):
-                if (self.add_rule(data, payload, dpid, block_id, type)): #Rule is inserted (add_rule)
+                if (self.add_rule(data, payload, dpid, block_id, linha)): #Rule is inserted (add_rule)
                     log.info(f"Update contention list ADD={data}")  
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
             else:
@@ -254,7 +252,7 @@ class Main(KytosNApp):
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
             if (linha not in self.list_blocks):
-                if (self.add_rule(data, payload, dpid, block_id, type)): #Rule is inserted (add_rule)
+                if (self.add_rule(data, payload, dpid, block_id, linha)): #Rule is inserted (add_rule)
                     log.info(f"Update contention list ADD={data}")  
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
             else:
