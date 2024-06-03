@@ -194,7 +194,7 @@ class Main(KytosNApp):
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
-            if "redirect_to" in data:
+            if self.stored_blocks["blocks"][block_id]["redirect_to"]:
                 linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
             else:
                 linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
