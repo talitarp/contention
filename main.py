@@ -1,6 +1,7 @@
 """Main module of talitarp/contention Kytos Network Application."""
 import requests
 import json
+import argparse
 from uuid import uuid4
 from kytos.core import KytosNApp, log, rest
 from kytos.core import KytosEvent
@@ -10,9 +11,6 @@ from kytos.core.rest_api import (HTTPException, JSONResponse, Request,
 from .settings import (
     COOKIE_PREFIX,
 )
-
-from pyof.v0x04.common.action import ActionOutput
-from pyof.v0x04.controller2switch.packet_out import PacketOut
 
 class Main(KytosNApp):
     """Main class of talitarp/contention NApp.This class is the entry point for this napp."""
@@ -108,22 +106,23 @@ class Main(KytosNApp):
         return True, "success"
 	       
     
-    def get_payload(self, data, block_id, action):
+    def get_payload(self, data, block_id, type):
         #Call flow_manager's REST API to create the flow
         #payload = {"flows": [{"priority": 30000, "hard_timeout": xxx, "cookie": 0xee00000000000001, "match": {"in_port": xxx, "dl_vlan": xxx, "nw_src": xxx, "nw_dst": xxx, "nw_proto": xxx, "ipv6_src"=xxx, "ipv6_dst"=xxx, "tcp_src"=xxx, "tcp_dst"=xxx, "udp_src"=xxx, "udp_dst"=xxx}, "actions": []}]}
 
         cookie = COOKIE_PREFIX + block_id
         cookie = int(cookie, 16)
-        if action == 'POST':
-		
-            if "redirect_to" not in data: # It's a block contention. Action is empty.
+	    
+        if type == 'POST_block' or type == 'POST_redirect' :
+            if "redirect_to" not in data: # It's a block contention. Action is empty
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
-            else: # It's a redirect contention. Action isn't empty.
+            if "redirect_to" in data:: # It's a redirect contention. Action isn't empty
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
-                ac = ActionOutput(port=redirect_to)
+                parser = argparse.ArgumentParser()
+                action = [parser.OFPActionOutput(redirect_to)]
                 #action = of.ofp_action_output(port=redirect_to)
-                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [ac]}]}
+                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
         
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
@@ -156,7 +155,7 @@ class Main(KytosNApp):
             if "mac_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
 
-        if action == 'DELETE': 
+        if type == 'DELETE': 
             block_id = data.get("block_id")
             # payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
@@ -196,57 +195,83 @@ class Main(KytosNApp):
         return True, "success"
 
     @rest('/v1/contention_redirect', methods=['POST'])
+    def contention_redirect(self, request: Request) -> JSONResponse:
+        type = 'POST_redirect'
+        data = get_json_or_400(request, self.controller.loop) #access user request
+        result, msg = self.validate_input(data, type)
+        if not result:
+            raise HTTPException(400, f"Invalid request data: {msg}")
+        log.info(f"ADD REDIRECT contention called with data={data}")
+      
+        dpid = data["switch"]
+        block_id = uuid4().hex[:14]
+        payload = self.get_payload(data, block_id, type)
+	    
+        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if) #NAO PRECISA. OU PENSAR EM UPDATE (?)
+            block_id = data["block_id"]
+		
+        if (block_id in self.stored_blocks["blocks"]): #NAO PRECISA MAIS. 
+            return JSONResponse({"result": "Index ID already exists. Contentation doesn't created"})
+        else:
+            linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) + str(data.get("redirect_to"))
+            if (linha not in self.list_blocks):
+                if (self.add_rule(data, payload, dpid, block_id)): #Rule is inserted (add_rule)
+                    log.info(f"Update contention list ADD={data}")  
+                    return JSONResponse(f"result: Contentation created successfully ID {block_id}")
+            else:
+                return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
+
     @rest('/v1/contention_block', methods=['POST'])
     def contention_block(self, request: Request) -> JSONResponse:
-        action = 'POST'
+        type = 'POST_block'
         data = get_json_or_400(request, self.controller.loop) #access user request
-        result, msg = self.validate_input(data, action)
+        result, msg = self.validate_input(data, type)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
         log.info(f"ADD BLOCK contention called with data={data}")
       
         dpid = data["switch"]
         block_id = uuid4().hex[:14]
-        payload = self.get_payload(data, block_id, action)
+        payload = self.get_payload(data, block_id, type)
 	    
-        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if) #NAO PRECISA
+        if ("block_id" in data): #Para verificação se tentar inserir um ID já existente (proximo if) #NAO PRECISA. OU PENSAR EM UPDATE (?)
             block_id = data["block_id"]
 		
-        if (block_id in self.stored_blocks["blocks"]): #PRECISA TBM VERIFICAR APENAS O MATCH PARA NAO DEIXAR CRIAR #NAO PRECISA MAIS
+        if (block_id in self.stored_blocks["blocks"]): #NAO PRECISA MAIS
             return JSONResponse({"result": "Index ID already exists. Contentation doesn't created"})
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
             if (linha not in self.list_blocks):
                 if (self.add_rule(data, payload, dpid, block_id)): #Rule is inserted (add_rule)
-                    log.info(f"Update block list ADD={data}")  
+                    log.info(f"Update contention list ADD={data}")  
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
             else:
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
 
     @rest('/v1/contention_redirect', methods=['DELETE'])
     @rest('/v1/contention_block', methods=['DELETE'])
-    def remove_contention_block(self, request: Request) -> JSONResponse:
-        action = 'DELETE'
+    def remove_contention(self, request: Request) -> JSONResponse:
+        type = 'DELETE'
         data = get_json_or_400(request, self.controller.loop) #access user request
-        result, msg = self.validate_input(data, action)
+        result, msg = self.validate_input(data, type)
         if not result:
             raise HTTPException(400, f"Invalid request data: {msg}")
-        log.info(f"DELETE BLOCK contention_block called with data={data}")
+        log.info(f"DELETE contention called with data={data}")
 	    
         block_id = data["block_id"]
         dpid= self.stored_blocks["blocks"][block_id]["switch"]
-        payload = self.get_payload(data, block_id, action)
+        payload = self.get_payload(data, block_id, type)
 
         if (self.remove_rule(data, payload, dpid)):
-            log.info(f"Update block list DELETE={data}")
+            log.info(f"Update contention list DELETE={data}")
             return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
         else:
             return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
 		
     @rest('/v1/contention_redirect', methods=['GET'])
     @rest('/v1/contention_block', methods=['GET'])
-    def list_contention_block(self, request: Request) -> JSONResponse:
-        """List blocks performed so far."""        
+    def list_contention(self, request: Request) -> JSONResponse:
+        """List contentions performed so far."""        
         return JSONResponse({"result": self.stored_blocks})
           
             
