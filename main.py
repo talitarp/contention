@@ -187,16 +187,16 @@ class Main(KytosNApp):
         self.list_blocks.append(linha)
         return True, "success"
 	    
-    def remove_rule(self, data, payload, dpid):
+    def remove_rule(self, data, payload, dpid, type):
         block_id = data["block_id"]
         if (block_id in self.stored_blocks["blocks"]):
             response = requests.delete(f"http://127.0.0.1:8181/api/kytos/flow_manager/v2/flows/{dpid}", json=payload)
             if response.status_code != 202:
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
-		    
-            if "outport" in self.stored_blocks["blocks"][block_id]["redirect_to"]:
+
+            if type == 'DELETE_redirect':
                 linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
-            else:
+            if type == 'DELETE_block:
                 linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
 	
             del self.stored_blocks["blocks"][block_id]
@@ -258,10 +258,9 @@ class Main(KytosNApp):
             else:
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
 
-    @rest('/v1/contention_redirect', methods=['DELETE'])
     @rest('/v1/contention_block', methods=['DELETE'])
     def remove_contention(self, request: Request) -> JSONResponse:
-        type = 'DELETE'
+        type = 'DELETE_block'
         data = get_json_or_400(request, self.controller.loop) #access user request
         result, msg = self.validate_input(data, type)
         if not result:
@@ -272,7 +271,26 @@ class Main(KytosNApp):
         dpid= self.stored_blocks["blocks"][block_id]["switch"]
         payload = self.get_payload(data, block_id, type)
 
-        if (self.remove_rule(data, payload, dpid)):
+        if (self.remove_rule(data, payload, dpid, type)):
+            log.info(f"Update contention list DELETE={data}")
+            return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
+        else:
+            return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
+		
+    @rest('/v1/contention_redirect', methods=['DELETE'])
+    def remove_contention(self, request: Request) -> JSONResponse:
+        type = 'DELETE_redirect'
+        data = get_json_or_400(request, self.controller.loop) #access user request
+        result, msg = self.validate_input(data, type)
+        if not result:
+            raise HTTPException(400, f"Invalid request data: {msg}")
+        log.info(f"DELETE contention called with data={data}")
+	    
+        block_id = data["block_id"]
+        dpid= self.stored_blocks["blocks"][block_id]["switch"]
+        payload = self.get_payload(data, block_id, type)
+
+        if (self.remove_rule(data, payload, dpid, type)):
             log.info(f"Update contention list DELETE={data}")
             return JSONResponse(f"result: Contention deleted successfully ID {block_id}")
         else:
