@@ -170,7 +170,7 @@ class Main(KytosNApp):
         port_no = data.get("interface")
         port_no = int(port_no)
 
-        if type == 'POST_redirect':
+        if type == 'POST_block':
             self.stored_blocks["blocks"][block_id] = {
                 "switch": data["switch"],
                 "interface": port_no,
