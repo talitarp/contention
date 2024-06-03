@@ -116,7 +116,7 @@ class Main(KytosNApp):
         if type == 'POST_block' or type == 'POST_redirect' :
             if "redirect_to" not in data: # It's a block contention. Action is empty
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
-            if "redirect_to" in data:: # It's a redirect contention. Action isn't empty
+            if "redirect_to" in data: # It's a redirect contention. Action isn't empty
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
                 parser = argparse.ArgumentParser()
