@@ -1,9 +1,7 @@
 """Main module of talitarp/contention Kytos Network Application."""
 import requests
 import json
-from pyof.v0x01.common.action import (
-    ActionDLAddr, ActionEnqueue, ActionNWAddr, ActionNWTos, ActionOutput,
-    ActionTPPort, ActionType, ActionVendorHeader, ActionVlanPCP, ActionVlanVid)
+from pyof.v0x04.common.action import ActionOutput as OFActionOutput
 from pyof.v0x01.common.phy_port import Port
 from uuid import uuid4
 from kytos.core import KytosNApp, log, rest
@@ -123,7 +121,7 @@ class Main(KytosNApp):
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
                 #parser = datapath.ofproto_parser
-                action = ActionOutput(redirect_to)
+                action = OFActionOutput(port=redirect_to)
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [action]}]}
         
             if "ipv4_src" in data["match"]:
