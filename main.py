@@ -170,13 +170,12 @@ class Main(KytosNApp):
         port_no = data.get("interface")
         port_no = int(port_no)
 	    
-        if type == 'POST_block': 
-            self.stored_blocks["blocks"][block_id] = {
-                "switch": data["switch"],
-                "interface": port_no,
-                "match": data.get("match"),
-	    }
-            linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
+        self.stored_blocks["blocks"][block_id] = {
+            "switch": data["switch"],
+            "interface": port_no,
+            "match": data.get("match"),
+        }
+        linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match"))
         
         if type == 'POST_redirect': 
             self.stored_blocks["blocks"][block_id] = {
@@ -205,7 +204,7 @@ class Main(KytosNApp):
             del self.stored_blocks["blocks"][block_id]
             self.list_blocks.remove(linha)
 		
-        return True, "success"
+            return True, "success"
 
     @rest('/v1/contention_redirect', methods=['POST'])
     def contention_redirect(self, request: Request) -> JSONResponse:
