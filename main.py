@@ -198,10 +198,10 @@ class Main(KytosNApp):
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
             if type == 'POST_block': 
-	        linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
+                linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
 		    
             if type == 'POST_redirect': 
-	        linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
+                linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"]) + str(self.stored_blocks["blocks"][block_id]["redirect_to"])
             
             del self.stored_blocks["blocks"][block_id]
             self.list_blocks.remove(linha)
