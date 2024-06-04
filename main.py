@@ -125,7 +125,7 @@ class Main(KytosNApp):
 
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
-                 payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
+                payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
             if "ipv4_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
                 payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
