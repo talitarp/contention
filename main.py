@@ -59,7 +59,7 @@ class Main(KytosNApp):
         """
       
     def validate_input(self, data, type):
-        if type == 'POST_block' or type == 'POST_redirect' or type == 'GET':
+        if type == 'POST_block' or type == 'POST_redirect':
             # TODO: validate all user inputs
             mandatory_fields = ["switch", "interface", "match"]
             # check switch
@@ -101,7 +101,7 @@ class Main(KytosNApp):
                 if "outport" not in redirect_to:
                     return False, f"Missing mandatory Outport on redirect_to"		    
 			
-        if type == 'DELETE_block' or type == 'DELETE_redirect' :
+        if type == 'DELETE_block' or type == 'DELETE_redirect':
             if "block_id" not in data:
                 return False, "Missing mandatory field block_id on data"
             
@@ -121,45 +121,46 @@ class Main(KytosNApp):
             if "redirect_to" in data: # It's a redirect contention. Action isn't empty
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
-                #action = OFActionOutput(port=redirect_to)
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
-        
-            if "ipv4_src" in data["match"]:
-                payload["flows"][0]["match"]["dl_type"] = 0x800
-                payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
-            if "ipv4_dst" in data["match"]:
-                payload["flows"][0]["match"]["dl_type"] = 0x800
-                payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
-            if "ipv6_src" in data["match"]:
-                payload["flows"][0]["match"]["dl_type"] = 0x86dd
-                payload["flows"][0]["match"]["ipv6_src"] = data["match"]["ipv6_src"]
-            if "ipv6_dst" in data["match"]:
-                payload["flows"][0]["match"]["dl_type"] = 0x86dd
-                payload["flows"][0]["match"]["ipv6_dst"] = data["match"]["ipv6_dst"]
-            if "ip_proto" in data["match"]:
-                payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
-            if "tcp_src" in data["match"]:
-                payload["flows"][0]["match"]["nw_proto"] = 6 
-                payload["flows"][0]["match"]["tp_src"] = data["match"]["tcp_src"]
-            if "tcp_dst" in data["match"]:
-                payload["flows"][0]["match"]["nw_proto"] = 6
-                payload["flows"][0]["match"]["tp_dst"] = data["match"]["tcp_dst"]
-            if "udp_src" in data["match"]:
-                payload["flows"][0]["match"]["nw_proto"] = 17
-                payload["flows"][0]["match"]["udp_src"] = data["match"]["udp_src"]
-            if "udp_dst" in data["match"]:
-                payload["flows"][0]["match"]["nw_proto"] = 17
-                payload["flows"][0]["match"]["udp_dst"] = data["match"]["udp_dst"]
-            if "mac_src" in data["match"]:
-                payload["flows"][0]["match"]["dl_src"] = data["match"]["mac_src"]
-            if "mac_dst" in data["match"]:
-                payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
 
-        if type == 'DELETE_block' or type == 'DELETE_redirect': 
+        if type == 'DELETE_block': 
             block_id = data.get("block_id")
-            # payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
-		
+        if type == 'DELETE_redirect': 
+            block_id = data.get("block_id")
+            payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
+        
+        if "ipv4_src" in data["match"]:
+            payload["flows"][0]["match"]["dl_type"] = 0x800
+            payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
+        if "ipv4_dst" in data["match"]:
+            payload["flows"][0]["match"]["dl_type"] = 0x800
+            payload["flows"][0]["match"]["nw_dst"] = data["match"]["ipv4_dst"]
+        if "ipv6_src" in data["match"]:
+            payload["flows"][0]["match"]["dl_type"] = 0x86dd
+            payload["flows"][0]["match"]["ipv6_src"] = data["match"]["ipv6_src"]
+        if "ipv6_dst" in data["match"]:
+            payload["flows"][0]["match"]["dl_type"] = 0x86dd
+            payload["flows"][0]["match"]["ipv6_dst"] = data["match"]["ipv6_dst"]
+        if "ip_proto" in data["match"]:
+            payload["flows"][0]["match"]["nw_proto"] = data["match"]["ip_proto"]
+        if "tcp_src" in data["match"]:
+            payload["flows"][0]["match"]["nw_proto"] = 6 
+            payload["flows"][0]["match"]["tp_src"] = data["match"]["tcp_src"]
+        if "tcp_dst" in data["match"]:
+            payload["flows"][0]["match"]["nw_proto"] = 6
+            payload["flows"][0]["match"]["tp_dst"] = data["match"]["tcp_dst"]
+        if "udp_src" in data["match"]:
+            payload["flows"][0]["match"]["nw_proto"] = 17
+            payload["flows"][0]["match"]["udp_src"] = data["match"]["udp_src"]
+        if "udp_dst" in data["match"]:
+            payload["flows"][0]["match"]["nw_proto"] = 17
+            payload["flows"][0]["match"]["udp_dst"] = data["match"]["udp_dst"]
+        if "mac_src" in data["match"]:
+            payload["flows"][0]["match"]["dl_src"] = data["match"]["mac_src"]
+        if "mac_dst" in data["match"]:
+            payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
+
         return payload
 	
     def add_rule(self, data, payload, dpid, block_id, type, linha):	    
