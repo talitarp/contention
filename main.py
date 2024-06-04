@@ -58,8 +58,8 @@ class Main(KytosNApp):
             It is not necessary in this NApp.
         """
       
-    def validate_input(self, data, action):
-        if action == 'POST' or action == 'GET':
+    def validate_input(self, data, type):
+        if type == 'POST_block' or type == 'POST_redirect' or type == 'GET':
             # TODO: validate all user inputs
             mandatory_fields = ["switch", "interface", "match"]
             # check switch
@@ -101,7 +101,7 @@ class Main(KytosNApp):
                 if "outport" not in redirect_to:
                     return False, f"Missing mandatory Outport on redirect_to"		    
 			
-        if action == 'DELETE':
+        if type == 'DELETE_block' or type == 'DELETE_redirect' :
             if "block_id" not in data:
                 return False, "Missing mandatory field block_id on data"
             
@@ -155,7 +155,7 @@ class Main(KytosNApp):
             if "mac_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
 
-        if type == 'DELETE': 
+        if type == 'DELETE_block' or type == 'DELETE_redirect': 
             block_id = data.get("block_id")
             # payload = {"flows": [{"priority": 30000, "cookie": 0xee00000000000001, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
