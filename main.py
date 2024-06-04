@@ -159,7 +159,7 @@ class Main(KytosNApp):
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": []}]}
         if type == 'DELETE_redirect': 
             block_id = data.get("block_id")
-            redirect_to = self.stored_blocks["blocks"][block_id]["redirect_to"]["port"]
+            redirect_to = self.stored_blocks["blocks"][block_id]["redirect_to"]["outport"]
             payload = {"flows": [{"priority": 30000, "cookie": cookie, "cookie_mask": 0xffffffffffffffff, "match": {"in_port": int(self.stored_blocks["blocks"][block_id]["interface"]), "dl_vlan": self.stored_blocks["blocks"][block_id]["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
      
         return payload
