@@ -259,7 +259,7 @@ class Main(KytosNApp):
                 return JSONResponse({"result": "RULE already exists in the list. Contentation doesn't created"})
 
     @rest('/v1/contention_block', methods=['DELETE'])
-    def remove_contention(self, request: Request) -> JSONResponse:
+    def remove_block(self, request: Request) -> JSONResponse:
         type = 'DELETE_block'
         data = get_json_or_400(request, self.controller.loop) #access user request
         result, msg = self.validate_input(data, type)
@@ -278,7 +278,7 @@ class Main(KytosNApp):
             return JSONResponse({"result": "RULE doesn't deleted because not exist or some problem occurred"})
 		
     @rest('/v1/contention_redirect', methods=['DELETE'])
-    def remove_contention(self, request: Request) -> JSONResponse:
+    def remove_redirect(self, request: Request) -> JSONResponse:
         type = 'DELETE_redirect'
         data = get_json_or_400(request, self.controller.loop) #access user request
         result, msg = self.validate_input(data, type)
