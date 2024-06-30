@@ -122,7 +122,9 @@ class Main(KytosNApp):
                 # Add an action to send to the specified port
                 redirect_to = data["redirect_to"]["outport"]
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
-
+                # verificar se será necessário modificar campos do pacote ou fazer apenas o redirecionamento.
+                # Ver se tem algum campo ex: set_vlan, set_ipv4_dst...set_ipv6_dst, set_tcp_dst/set_udp_dst
+		
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
                 payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
