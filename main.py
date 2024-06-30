@@ -85,7 +85,7 @@ class Main(KytosNApp):
             if "vlan" not in match:
                return False, "Missing mandatory field vlan on match"
 
-            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst", "redirect_to", "outport"]
+            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst", "redirect_to", "outport", "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"]
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
@@ -155,6 +155,9 @@ class Main(KytosNApp):
                 payload["flows"][0]["match"]["dl_src"] = data["match"]["mac_src"]
             if "mac_dst" in data["match"]:
                 payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
+		    
+            #Considerando uma ação de redirect modificando os campos do pacote, podemos ter solicitações de modificações do campo:
+            #"set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"
 	    
         if type == 'DELETE_block': 
             block_id = data.get("block_id")
@@ -228,7 +231,8 @@ class Main(KytosNApp):
             return JSONResponse({"result": "Index ID already exists. Contentation doesn't created"})
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) + str(data.get("redirect_to"))
-            if (linha not in self.list_blocks):
+            linha2 = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) #verificar se há uma regra igual para bloqueio
+            if (linha not in self.list_blocks) or (linha2 not in self.list_blocks):
                 if (self.add_rule(data, payload, dpid, block_id, type, linha)): #Rule is inserted (add_rule)
                     log.info(f"Update contention list ADD={data}")  
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
