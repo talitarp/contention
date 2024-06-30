@@ -232,7 +232,7 @@ class Main(KytosNApp):
         else:
             linha = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) + str(data.get("redirect_to"))
             linha2 = str(data["switch"]) + str(data.get("interface")) + str(data.get("match")) #verificar se há uma regra igual para bloqueio
-            if (linha not in self.list_blocks) or (linha2 not in self.list_blocks):
+            if (linha not in self.list_blocks) and (linha2 not in self.list_blocks):
                 if (self.add_rule(data, payload, dpid, block_id, type, linha)): #Rule is inserted (add_rule)
                     log.info(f"Update contention list ADD={data}")  
                     return JSONResponse(f"result: Contentation created successfully ID {block_id}")
