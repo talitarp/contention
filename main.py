@@ -203,10 +203,10 @@ class Main(KytosNApp):
                 raise HTTPException(400, f"Invalid request to flow_manager: {response.text}")
 
             linha = str(self.stored_blocks["blocks"][block_id]["switch"]) + str(self.stored_blocks["blocks"][block_id]["interface"]) + str(self.stored_blocks["blocks"][block_id]["match"])
-	    del self.stored_blocks["blocks"][block_id]
+            del self.stored_blocks["blocks"][block_id]
             self.list_blocks.remove(linha)
 		
-            return True, "success"
+        return True, "success"
 
     @rest('/v1/contention', methods=['POST'])
     def contention_post(self, request: Request) -> JSONResponse:
