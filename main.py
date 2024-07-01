@@ -33,6 +33,7 @@ class Main(KytosNApp):
             "interface": "...",
             "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...},
 	    "redirect_to": {outport},
+            "set": {set_vlan, set_ipv4_dst, set_ipv6_dst, set_tcp_dst, set_udp_dst ...},
             }
         }}
         """
@@ -118,13 +119,32 @@ class Main(KytosNApp):
         if type == 'POST':
             if "redirect_to" not in data: # It's a block contention. Action is empty
                 payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": []}]}
+		    
             if "redirect_to" in data: # It's a redirect contention. Action isn't empty
-                # Add an action to send to the specified port
-                redirect_to = data["redirect_to"]["outport"]
-                payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
-                # verificar se será necessário modificar campos do pacote ou fazer apenas o redirecionamento.
-                # Ver se tem algum campo ex: set_vlan, set_ipv4_dst...set_ipv6_dst, set_tcp_dst/set_udp_dst
-		
+                #Is necessary verificy if exists more fields ("set_vlan", set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst") on set.
+		    
+                if "set" not in data: # The rule is redirect contention and doesn't exists modify pack data.
+                    redirect_to = data["redirect_to"]["outport"]
+                    payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
+			
+                if "set" in data: # The rule is redirect contention and exists modify pack data. Before redirect for outport especify, is necessary to modify the pack data.
+                    set = data.get("set")
+                    redirect_to = data["redirect_to"]["outport"]  # Add an action to send to the specified port (last action)
+		    
+                    if "set_vlan" in set:
+                        # adicionar uma action no flow que será enviado para flow_manager com action_type: set_vlan, vlanid= vlan que o usuário pediu
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
+		    if "set_ipv4_dst" in set:
+		        # add action no flow
+		    if "set_ipv6_dst" in set:
+		        # add action no flow
+		    if "set_tcp_dst" in set:
+		        # add action no flow
+		    if "set_udp_dst" in set:
+		        # add action no flow
+		    if "set_mac_dst" in set:
+		        # add action no flow
+		    		
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
                 payload["flows"][0]["match"]["nw_src"] = data["match"]["ipv4_src"]
