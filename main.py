@@ -99,11 +99,12 @@ class Main(KytosNApp):
             #Only Redirect Contention, the outport redirect is specification (mandatory).
             if "redirect_to" in data:
                 redirect_to = data.get("redirect_to")
-                if ("outport" not in redirect_to):
+                if "outport" not in redirect_to:
                     return False, f"Missing mandatory field on redirect_to: outport"
 			
-            #Only Redirect Contention, the outport redirect is specification.
-            expected_fields2 = ["outport", "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"]
+            #Only on Redirect Contention, some fields are expected if exists change in pack data.
+            expected_fields2 = ["set_vlan", "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"]
+
             if "set" in data:
                 set = data.get("set")
                 for key in set:
