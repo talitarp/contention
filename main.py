@@ -95,11 +95,11 @@ class Main(KytosNApp):
                 if "ipv4_src" not in match or "ipv4_dst" not in match or "ipv6_src" not in match or "ipv6_dst" not in match:
                     return False, f"Missing mandatory ipv4 or ipv6 on match"
 	   
-            #Only Redirect Contention, the field redirect is specification with outport, for example. 
+            #Only Redirect Contention, the field redirect is specification. Ex: outport, set_vlan, set_ipv4_dst, set_ipv6_dst, set_tcp_dst, set_udp_dst. 
             if "redirect_to" in data:
                 redirect_to = data.get("redirect_to")
-                if "outport" not in redirect_to:
-                    return False, f"Missing mandatory Outport on redirect_to"		    
+                if ("outport" not in redirect_to) or ("set_vlan" not in redirect_to) or ("set_ipv4_dst" not in redirect_to) or ("set_ipv6_dst" not in redirect_to) or ("set_tcp_dst" not in redirect_to) or ("set_udp_dst" not in redirect_to):
+                    return False, f"Missing mandatory field on redirect_to: outport/set_vlan/set_ipv4_dst/set_ipv6_dst/set_tcp_dst/set_udp_dst"		    
 			
         if type == 'DELETE' :
             if "block_id" not in data:
