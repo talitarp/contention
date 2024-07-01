@@ -136,14 +136,19 @@ class Main(KytosNApp):
                         payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
                     if "set_ipv4_dst" in set:
 		        # add action no flow
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
                     if "set_ipv6_dst" in set:
-		        # add action no flow
+                        # add action no flow
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
                     if "set_tcp_dst" in set:
 		        # add action no flow
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
                     if "set_udp_dst" in set:
 		        # add action no flow
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
                     if "set_mac_dst" in set:
 		        # add action no flow
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "output", "port": redirect_to}]}]}
 		    		
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
