@@ -86,7 +86,7 @@ class Main(KytosNApp):
             if "vlan" not in match:
                return False, "Missing mandatory field vlan on match"
 
-            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst", "redirect_to", "outport", "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"]
+            expected_fields = ["ipv4_src", "ipv4_dst", "ipv6_src", "ipv6_dst", "ip_proto", "sport", "dport", "vlan", "tcp_src", "tcp_dst", "udp_src", "udp_dst", "mac_src", "mac_dst"]
             for key in match:
                 if key not in expected_fields:
                     return False, f"Unexpected input match field: {key}"
@@ -96,11 +96,19 @@ class Main(KytosNApp):
                 if "ipv4_src" not in match or "ipv4_dst" not in match or "ipv6_src" not in match or "ipv6_dst" not in match:
                     return False, f"Missing mandatory ipv4 or ipv6 on match"
 	   
-            #Only Redirect Contention, the outport redirect is specification.
+            #Only Redirect Contention, the outport redirect is specification (mandatory).
             if "redirect_to" in data:
                 redirect_to = data.get("redirect_to")
                 if ("outport" not in redirect_to):
-                    return False, f"Missing mandatory field on redirect_to: outport"		    
+                    return False, f"Missing mandatory field on redirect_to: outport"
+			
+            #Only Redirect Contention, the outport redirect is specification.
+            expected_fields2 = ["outport", "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"]
+            if "set" in data:
+                set = data.get("set")
+                for key in set:
+                    if key not in expected_fields2:
+                        return False, f"Unexpected input set field: {key}"
 			
         if type == 'DELETE' :
             if "block_id" not in data:
