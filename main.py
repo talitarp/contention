@@ -98,8 +98,8 @@ class Main(KytosNApp):
             #Only Redirect Contention, the field redirect is specification. Ex: outport, set_vlan, set_ipv4_dst, set_ipv6_dst, set_tcp_dst, set_udp_dst. 
             if "redirect_to" in data:
                 redirect_to = data.get("redirect_to")
-                if ("outport" not in redirect_to) or ("set_vlan" not in redirect_to) or ("set_ipv4_dst" not in redirect_to) or ("set_ipv6_dst" not in redirect_to) or ("set_tcp_dst" not in redirect_to) or ("set_udp_dst" not in redirect_to):
-                    return False, f"Missing mandatory field on redirect_to: outport/set_vlan/set_ipv4_dst/set_ipv6_dst/set_tcp_dst/set_udp_dst"		    
+                if ("outport" not in redirect_to):
+                    return False, f"Missing mandatory field on redirect_to: outport"		    
 			
         if type == 'DELETE' :
             if "block_id" not in data:
