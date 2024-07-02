@@ -33,7 +33,7 @@ class Main(KytosNApp):
             "interface": "...",
             "match": {in_port, dl_vlan, nw_src, nw_dst, nw_proto...},
 	    "redirect_to": {outport},
-            "set": {set_vlan, set_ipv4_dst, set_ipv6_dst, set_tcp_dst, set_udp_dst ...},
+            "set": {set_vlan, set_ipv4_dst, set_ipv6_dst, set_tcp_dst, set_udp_dst ...}
             }
         }}
         """
