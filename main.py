@@ -143,11 +143,13 @@ class Main(KytosNApp):
                     if "set_vlan" in set:
                         # adicionar uma action no flow que será enviado para flow_manager com action_type: set_vlan, vlanid= vlan que o usuário pediu
                         vlan= data["set"]["set_vlan"]
-                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_vlan", "vlanid": vlan},{"action_type": "output", "port": redirect_to}]}]}
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_vlan", "vlanid": vlan}]}]}
+                        # {"action_type": "output", "port": redirect_to}
                     if "set_ipv4_dst" in set:
 		        # action_type: set_ipv4_dst, ipv4_dst= ipv4_dst que o usuário pediu
                         ipv4_dst = data["set"]["set_ipv4_dst"]
-                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_ipv4_dst", "ipv4_dst": ipv4_dst},{"action_type": "output", "port": redirect_to}]}]}
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_ipv4_dst", "ipv4_dst": ipv4_dst}]}]}
+                        # add last action: {"action_type": "output", "port": redirect_to}
                     if "set_ipv6_dst" in set:
                         # action_type: set_ipv6_dst, ipv6_dst= ipv6_dst que o usuário pediu
                         ipv6_dst = data["set"]["set_ipv6_dst"]
