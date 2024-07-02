@@ -153,19 +153,19 @@ class Main(KytosNApp):
                     if "set_ipv6_dst" in set:
                         # action_type: set_ipv6_dst, ipv6_dst= ipv6_dst que o usuário pediu
                         ipv6_dst = data["set"]["set_ipv6_dst"]
-                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_ipv6_dst", "ipv6_dst": ipv6_dst},{"action_type": "output", "port": redirect_to}]}]}
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_ipv6_dst", "ipv6_dst": ipv6_dst}]}]}
                     if "set_tcp_dst" in set:
 		        # action_type: set_tcp_dst, tcp_dst= tcp_dst que o usuário pediu
                         tcp_dst = data["set"]["set_tcp_dst"]
-                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_tcp_dst", "tcp_dst": tcp_dst},{"action_type": "output", "port": redirect_to}]}]}
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_tcp_dst", "tcp_dst": tcp_dst}]}]}
                     if "set_udp_dst" in set:
 		        # action_type: set_udp_dst, udp_dst= udp_dst que o usuário pediu
                         udp_dst = data["set"]["set_udp_dst"]
-                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_udp_dst", "udp_dst": udp_dst},{"action_type": "output", "port": redirect_to}]}]}
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_udp_dst", "udp_dst": udp_dst}]}]}
                     if "set_mac_dst" in set:
 		        # action_type: set_mac_dst, mac_dst= mac_dst que o usuário pediu
                         mac_dst = data["set"]["set_mac_dst"]
-                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_mac_dst", "mac_dst": mac_dst},{"action_type": "output", "port": redirect_to}]}]}
+                        payload = {"flows": [{"priority": 30000, "cookie": cookie, "match": {"in_port": int(data["interface"]), "dl_vlan": data["match"]["vlan"]}, "actions": [{"action_type": "set_mac_dst", "mac_dst": mac_dst}]}]}
 		    		
             if "ipv4_src" in data["match"]:
                 payload["flows"][0]["match"]["dl_type"] = 0x800
