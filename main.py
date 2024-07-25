@@ -3,6 +3,7 @@ import requests
 import json
 from pyof.v0x04.common.action import ActionOutput as OFActionOutput
 from pyof.v0x01.common.phy_port import Port
+from napps.kytos.of_core.v0x04.flow import Action
 from uuid import uuid4
 from kytos.core import KytosNApp, log, rest
 from kytos.core import KytosEvent
@@ -39,6 +40,15 @@ class Main(KytosNApp):
         """
         self.list_blocks = []
 
+        # for new actions
+	self.new_actions = {
+            "set_ipv4_dst": ipv4_dst,
+            "set_ipv6_dst": ipv6_dst,
+            "set_tcp_dst": tcp_dst,
+            "set_udp_dst": udp_dst,
+            "set_mac_dst": mac_dst
+        }
+
     def execute(self):
         """This method is executed right after the setup method execution.
 
@@ -58,7 +68,12 @@ class Main(KytosNApp):
 
             It is not necessary in this NApp.
         """
-      
+
+    def register_new_actions (self):
+        """Add new actions to kytos/of_core."""
+        for name, action in self.new_actions.items():
+            Action.add_action_class(name, action)
+	
     def validate_input(self, data, type):
         if type == 'POST':
             # TODO: validate all user inputs
@@ -139,6 +154,7 @@ class Main(KytosNApp):
                 if "set" in data: # The rule is redirect contention and exists modify pack data. Before redirect for outport especify, is necessary to modify the pack data.
                     set = data.get("set")
                     redirect_to = data["redirect_to"]["outport"]  # Add an action to send to the specified port (last action)
+
 		    
                     if "set_vlan" in set:
                         # adicionar uma action no flow que será enviado para flow_manager com action_type: set_vlan, vlanid= vlan que o usuário pediu
