@@ -41,7 +41,7 @@ class Main(KytosNApp):
         self.list_blocks = []
 
         # for new actions
-	self.new_actions = {
+        self.new_actions = {
             "set_ipv4_dst": ipv4_dst,
             "set_ipv6_dst": ipv6_dst,
             "set_tcp_dst": tcp_dst,
