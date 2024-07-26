@@ -41,6 +41,7 @@ class Main(KytosNApp):
         self.list_blocks = []
 
         # for new actions
+        """
         self.new_actions = {
             "set_ipv4_dst": ipv4_dst,
             "set_ipv6_dst": ipv6_dst,
@@ -48,7 +49,7 @@ class Main(KytosNApp):
             "set_udp_dst": udp_dst,
             "set_mac_dst": mac_dst
         }
-
+        """
     def execute(self):
         """This method is executed right after the setup method execution.
 
