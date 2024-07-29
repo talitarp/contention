@@ -1,1 +1,1 @@
-
+"""of_core submodule."""
