@@ -5,8 +5,8 @@ from napps.kytos.of_core.flow import ActionBase
 class ActionSetIpv4dst(ActionBase):
     """Action to send INT report."""
 
-    def __init__(self, ip):
-        self.ip = ip
+    def __init__(self, *args):
+        #self.ip = ... 
         self.action_type = "set_ipv4_dst"
 
     @classmethod
