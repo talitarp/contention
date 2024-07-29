@@ -18,3 +18,7 @@ class ActionSetIpv4dst(ActionBase):
     """Return a pyof ActionSetIpv4dst instance."""
         return OFActionSetIpv4dst()
 
+#class ActionSetIpv6dst(ActionBase):
+#class ActionSetTcpdst(ActionBase):
+#class ActionSetUdpdst(ActionBase):
+#class ActionSetMacdst(ActionBase):
