@@ -1,5 +1,13 @@
 """Of_core.v0x04.action"""
 
+"""New actions:
+set_ipv4_dst
+set_ipv6_dst
+set_tcp_dst
+set_udp_dst
+set_mac_dst
+"""
+
 from napps.kytos.of_core.flow import ActionBase
 
 class ActionSetIpv4dst(ActionBase):
