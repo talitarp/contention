@@ -158,7 +158,7 @@ class Main(KytosNApp):
                 "set_ipv6_dst",
                 "set_tcp_dst",
                 "set_udp_dst",
-                "set_mac_dst",
+                "set_eth_dst",
             ]
 
             if "set" in data:
@@ -197,7 +197,7 @@ class Main(KytosNApp):
                 }
 
             if "redirect_to" in data:  # It's a redirect contention. Action isn't empty
-                # Is necessary verificy if exists more fields ("set_vlan", set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst") on set.
+                # Is necessary verificy if exists more fields ("set_vlan", set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_eth_dst") on set.
 
                 if (
                     "set" not in data
@@ -334,9 +334,9 @@ class Main(KytosNApp):
                                 }
                             ]
                         }
-                    if "set_mac_dst" in set:
-                        # action_type: set_mac_dst, mac_dst= mac_dst que o usuário pediu
-                        mac_dst = data["set"]["set_mac_dst"]
+                    if "set_eth_dst" in set:
+                        # action_type: set_eth_dst, eth_dst= mac_dst que o usuário pediu
+                        eth_dst = data["set"]["set_eth_dst"]
                         payload = {
                             "flows": [
                                 {
@@ -348,8 +348,8 @@ class Main(KytosNApp):
                                     },
                                     "actions": [
                                         {
-                                            "action_type": "set_mac_dst",
-                                            "mac_dst": mac_dst,
+                                            "action_type": "set_eth_dst",
+                                            "eth_dst": eth_dst,
                                         },
                                         {"action_type": "output", "port": redirect_to},
                                     ],
@@ -389,7 +389,7 @@ class Main(KytosNApp):
                 payload["flows"][0]["match"]["dl_dst"] = data["match"]["mac_dst"]
 
             # Considerando uma ação de redirect modificando os campos do pacote, podemos ter solicitações de modificações do campo:
-            # "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_mac_dst"
+            # "set_ipv4_dst", "set_ipv6_dst", "set_tcp_dst", "set_udp_dst", "set_eth_dst"
 
         if type == "DELETE":
             if "redirect_to" not in self.stored_blocks["blocks"][block_id]:  # It's a block contention.
