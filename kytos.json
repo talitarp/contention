@@ -1,11 +1,11 @@
 {
-  "author": "Talita Rocha Pinheiro",
-  "username": "talitarp",
-  "name": "contention",
-  "description": "Napp kytos for lock-type containment",
+  "author": "HackInSDN Team",
+  "username": "hackinsdn",
+  "name": "containment",
+  "description": "HackInSDN Containment Kytos Napp",
   "version": "1.0",
   "napp_dependencies": ["of_core", "topology"],
   "license": "",
   "tags": [],
-  "url": ""
+  "url": "https://github.com/hackinsdn/containment"
 }
